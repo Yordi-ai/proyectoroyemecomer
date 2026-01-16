@@ -2,6 +2,7 @@ package com.royemsac.ecommerce_backend.controller;
 
 
 import com.royemsac.ecommerce_backend.model.Usuario;
+import com.royemsac.ecommerce_backend.security.JwtUtil;
 import com.royemsac.ecommerce_backend.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +20,21 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
     
+    @Autowired
+    private JwtUtil jwtUtil;
+    
     @PostMapping("/registro")
     public ResponseEntity<?> registrar(@RequestBody Usuario usuario) {
         try {
             Usuario nuevoUsuario = usuarioService.registrar(usuario);
+            
+            // Generar token JWT al registrarse
+            String token = jwtUtil.generateToken(nuevoUsuario.getEmail(), nuevoUsuario.getRol());
+            
             Map<String, Object> response = new HashMap<>();
             response.put("mensaje", "Usuario registrado exitosamente");
             response.put("usuario", nuevoUsuario);
+            response.put("token", token);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             Map<String, String> error = new HashMap<>();
@@ -42,11 +51,15 @@ public class UsuarioController {
         Optional<Usuario> usuario = usuarioService.login(email, password);
         
         if (usuario.isPresent()) {
+            Usuario user = usuario.get();
+            
+            // Generar token JWT real
+            String token = jwtUtil.generateToken(user.getEmail(), user.getRol());
+            
             Map<String, Object> response = new HashMap<>();
             response.put("mensaje", "Login exitoso");
-            response.put("usuario", usuario.get());
-            // En producción aquí generarías un token JWT
-            response.put("token", "fake-jwt-token-" + usuario.get().getId());
+            response.put("usuario", user);
+            response.put("token", token);
             return ResponseEntity.ok(response);
         } else {
             Map<String, String> error = new HashMap<>();
