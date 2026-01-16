@@ -1,0 +1,99 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <h1>Panel de Administración</h1>
+    <button class="btn-nuevo" (click)="mostrarFormularioNuevo()" *ngIf="!mostrarFormulario">
+      ➕ Nuevo Producto
+    </button>
+  </div>
+
+  <!-- FORMULARIO -->
+  <div class="formulario-card" *ngIf="mostrarFormulario">
+    <h2>{{modoEdicion ? 'Editar Producto' : 'Nuevo Producto'}}</h2>
+    
+    <form (ngSubmit)="guardarProducto()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nombre *</label>
+          <input type="text" [(ngModel)]="nuevoProducto.nombre" name="nombre" required>
+        </div>
+
+        <div class="form-group">
+          <label>Categoría *</label>
+          <select [(ngModel)]="nuevoProducto.categoria" name="categoria" required>
+            <option value="">Seleccionar...</option>
+            <option value="EPP">EPP</option>
+            <option value="Ferretería">Ferretería</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Precio *</label>
+          <input type="number" [(ngModel)]="nuevoProducto.precio" name="precio" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+          <label>Stock *</label>
+          <input type="number" [(ngModel)]="nuevoProducto.stock" name="stock" required>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Descripción</label>
+          <textarea [(ngModel)]="nuevoProducto.descripcion" name="descripcion" rows="3"></textarea>
+        </div>
+
+        <div class="form-group full-width">
+          <label>URL de Imagen</label>
+          <input type="text" [(ngModel)]="nuevoProducto.imagen" name="imagen">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-guardar">
+          {{modoEdicion ? 'Actualizar' : 'Crear'}} Producto
+        </button>
+        <button type="button" class="btn-cancelar" (click)="cancelar()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- TABLA DE PRODUCTOS -->
+  <div class="productos-tabla" *ngIf="!mostrarFormulario">
+    <h2>Productos ({{productos.length}})</h2>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let producto of productos">
+          <td>{{producto.id}}</td>
+          <td>{{producto.nombre}}</td>
+          <td><span class="badge">{{producto.categoria}}</span></td>
+          <td>S/ {{producto.precio.toFixed(2)}}</td>
+          <td>
+            <span class="stock-badge" [class.stock-bajo]="producto.stock < 10">
+              {{producto.stock}}
+            </span>
+          </td>
+          <td class="acciones">
+            <button class="btn-editar" (click)="editarProducto(producto)">✏️</button>
+            <button class="btn-eliminar" (click)="eliminarProducto(producto.id)">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="sin-productos" *ngIf="productos.length === 0">
+      <p>No hay productos registrados</p>
+    </div>
+  </div>
+</div>

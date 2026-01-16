@@ -1,0 +1,77 @@
+<div class="admin-pedidos-container">
+  <h1>Gestión de Pedidos</h1>
+
+  <div class="cargando" *ngIf="cargando">
+    <p>Cargando pedidos...</p>
+  </div>
+
+  <div class="sin-pedidos" *ngIf="!cargando && ordenes.length === 0">
+    <p>No hay pedidos registrados</p>
+  </div>
+
+  <div class="pedidos-tabla" *ngIf="!cargando && ordenes.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Cliente</th>
+          <th>Fecha</th>
+          <th>Total</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let orden of ordenes">
+          <td><strong>#{{orden.id}}</strong></td>
+          <td>
+            <div class="cliente-info">
+              <strong>{{orden.nombreCliente}}</strong>
+              <p>{{orden.emailCliente}}</p>
+              <p>{{orden.telefonoCliente}}</p>
+            </div>
+          </td>
+          <td>{{formatearFecha(orden.fecha!)}}</td>
+          <td class="precio">S/ {{orden.total.toFixed(2)}}</td>
+          <td>
+            <span class="badge-estado" [ngClass]="getEstadoClass(orden.estado!)">
+              {{orden.estado}}
+            </span>
+          </td>
+          <td>
+            <select 
+              class="select-estado" 
+              [(ngModel)]="orden.estado" 
+              (change)="cambiarEstado(orden, orden.estado!)"
+              [ngModelOptions]="{standalone: true}">
+              <option *ngFor="let estado of estados" [value]="estado">
+                {{estado}}
+              </option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- DETALLES EXPANDIBLES -->
+    <div class="pedido-detalles-card" *ngFor="let orden of ordenes">
+      <div class="detalles-header">
+        <h3>Pedido #{{orden.id}} - Productos</h3>
+      </div>
+      <div class="detalles-lista">
+        <div class="detalle-item" *ngFor="let detalle of orden.detalles">
+          <img [src]="detalle.producto.imagen" [alt]="detalle.producto.nombre">
+          <div class="detalle-info">
+            <h4>{{detalle.producto.nombre}}</h4>
+            <p>Cantidad: {{detalle.cantidad}} x S/ {{detalle.precioUnitario.toFixed(2)}}</p>
+            <p class="subtotal">Subtotal: S/ {{detalle.subtotal.toFixed(2)}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="detalles-direccion">
+        <strong>Dirección de envío:</strong>
+        <p>{{orden.direccionEnvio}}</p>
+      </div>
+    </div>
+  </div>
+</div>

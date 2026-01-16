@@ -1,0 +1,54 @@
+<!-- HERO -->
+<section class="hero">
+  <h1>Equipos de Protección Personal para minería e industria</h1>
+  <p>
+    Protege a tu personal con productos certificados: respiradores, cascos, guantes,
+    lentes de seguridad, arneses y más.
+  </p>
+  <button (click)="scrollToProducts()">Ver productos</button>
+</section>
+
+<!-- BARRA DE BÚSQUEDA Y FILTROS -->
+<div class="filtros-container">
+  <div class="busqueda">
+    <input 
+      type="text" 
+      [(ngModel)]="terminoBusqueda" 
+      (keyup.enter)="buscarProductos()"
+      placeholder="Buscar productos..."
+      class="input-busqueda">
+    <button (click)="buscarProductos()" class="btn-buscar">🔍 Buscar</button>
+  </div>
+  
+  <div class="filtro-categoria">
+    <label>Categoría:</label>
+    <select [(ngModel)]="categoriaSeleccionada" (change)="filtrarPorCategoria()" class="select-categoria">
+      <option value="">Todas las categorías</option>
+      <option *ngFor="let cat of categorias" [value]="cat">{{cat}}</option>
+    </select>
+  </div>
+  
+  <button (click)="limpiarFiltros()" class="btn-limpiar-filtros">Limpiar filtros</button>
+</div>
+
+<!-- CONTENIDO PRINCIPAL -->
+<main class="container">
+  <h2 class="section-title">Productos destacados</h2>
+  
+  <div *ngIf="productos.length === 0" class="sin-resultados">
+    <p>No se encontraron productos</p>
+  </div>
+  
+  <div class="products-grid" id="productsGrid">
+    <div class="product-card" *ngFor="let producto of productos">
+  <div class="producto-clickeable" [routerLink]="['/producto', producto.id]">
+    <div class="product-image">
+      <img [src]="producto.imagen" [alt]="producto.nombre" *ngIf="producto.imagen" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+      <span *ngIf="!producto.imagen">Imagen del producto</span>
+    </div>
+    <div class="product-name">{{producto.nombre}}</div>
+    <div class="product-brand">{{producto.categoria}}</div>
+    <div class="product-price">S/ {{producto.precio.toFixed(2)}}</div>
+  </div>
+  <button (click)="addToCart(producto)">Añadir al carrito</button>
+</div>

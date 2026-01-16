@@ -1,0 +1,157 @@
+.detalle-container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.btn-volver {
+  background-color: #fff;
+  border: 2px solid #003366;
+  color: #003366;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 20px;
+  transition: all 0.3s;
+}
+
+.btn-volver:hover {
+  background-color: #003366;
+  color: #fff;
+}
+
+.detalle-contenido {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.detalle-imagen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 20px;
+  min-height: 400px;
+}
+
+.detalle-imagen img {
+  max-width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+}
+
+.placeholder-imagen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 400px;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.detalle-info h1 {
+  font-size: 2rem;
+  color: #222;
+  margin-bottom: 10px;
+}
+
+.categoria {
+  margin-bottom: 20px;
+}
+
+.badge-categoria {
+  background-color: #003366;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.precio-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.precio {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #00b894;
+}
+
+.stock {
+  background-color: #00b894;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.stock-bajo {
+  background-color: #d63031;
+}
+
+.descripcion {
+  margin-bottom: 30px;
+}
+
+.descripcion h3 {
+  font-size: 1.3rem;
+  color: #003366;
+  margin-bottom: 10px;
+}
+
+.descripcion p {
+  color: #555;
+  line-height: 1.6;
+}
+
+.cantidad-selector {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.cantidad-selector label {
+  font-weight: bold;
+  color: #003366;
+}
+
+.controles-cantidad {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.controles-cantidad button {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #003366;
+  background-color: #fff;
+  color: #003366;
+  font-size: 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.controles-cantidad button:hover:not(:disabled) {
+  background-color: #003366;
+  color: #fff;
+}

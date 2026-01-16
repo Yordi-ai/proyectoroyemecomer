@@ -1,0 +1,138 @@
+.registro-container {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.registro-card {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  width: 100%;
+  max-width: 600px;
+}
+
+.registro-card h2 {
+  color: #003366;
+  font-size: 2rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.subtitle {
+  color: #666;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  color: #003366;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #003366;
+}
+
+.error-message {
+  background-color: #ffe6e6;
+  color: #d63031;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  border-left: 4px solid #d63031;
+}
+
+.btn-registro {
+  width: 100%;
+  padding: 14px;
+  background-color: #00b894;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-registro:hover:not(:disabled) {
+  background-color: #00a085;
+}
+
+.btn-registro:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 25px;
+  padding-top: 25px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.login-link p {
+  color: #666;
+}
+
+.login-link a {
+  color: #003366;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+.volver-link {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.volver-link a {
+  color: #666;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.volver-link a:hover {
+  color: #003366;
+}
+
+@media (max-width: 600px) {
+  .registro-card {
+    padding: 30px 20px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

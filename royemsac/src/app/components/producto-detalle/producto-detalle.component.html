@@ -1,0 +1,56 @@
+<div class="detalle-container" *ngIf="!cargando && producto">
+  <button class="btn-volver" (click)="volverInicio()">← Volver a productos</button>
+  
+  <div class="detalle-contenido">
+    <div class="detalle-imagen">
+      <img [src]="producto.imagen" [alt]="producto.nombre" *ngIf="producto.imagen">
+      <div class="placeholder-imagen" *ngIf="!producto.imagen">
+        <span>Imagen no disponible</span>
+      </div>
+    </div>
+
+    <div class="detalle-info">
+      <h1>{{producto.nombre}}</h1>
+      <p class="categoria">
+        <span class="badge-categoria">{{producto.categoria}}</span>
+      </p>
+      
+      <div class="precio-section">
+        <span class="precio">S/ {{producto.precio.toFixed(2)}}</span>
+        <span class="stock" [class.stock-bajo]="producto.stock < 10">
+          {{producto.stock > 0 ? 'Stock: ' + producto.stock : 'Sin stock'}}
+        </span>
+      </div>
+
+      <div class="descripcion">
+        <h3>Descripción</h3>
+        <p>{{producto.descripcion || 'Sin descripción disponible'}}</p>
+      </div>
+
+      <div class="cantidad-selector" *ngIf="producto.stock > 0">
+        <label>Cantidad:</label>
+        <div class="controles-cantidad">
+          <button (click)="disminuirCantidad()" [disabled]="cantidad <= 1">-</button>
+          <span class="cantidad-display">{{cantidad}}</span>
+          <button (click)="aumentarCantidad()" [disabled]="cantidad >= producto.stock">+</button>
+        </div>
+      </div>
+
+      <div class="acciones">
+        <button 
+          class="btn-agregar-carrito" 
+          (click)="agregarAlCarrito()"
+          [disabled]="producto.stock === 0">
+          {{producto.stock > 0 ? '🛒 Agregar al carrito' : 'Sin stock'}}
+        </button>
+        <button class="btn-seguir-comprando" routerLink="/">
+          Seguir comprando
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cargando" *ngIf="cargando">
+  <p>Cargando producto...</p>
+</div>

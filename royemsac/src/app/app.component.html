@@ -1,0 +1,32 @@
+<!-- HEADER -->
+<header>
+  <div class="logo" routerLink="/">ROYEM S.A.C. - EPP & Ferretería</div>
+  <nav>
+    <a routerLink="/">Inicio</a>
+    <a routerLink="/mis-pedidos" *ngIf="usuarioActual">Mis Pedidos</a>
+    <a href="#">Productos</a>
+    <a href="#">Nosotros</a>
+    <a href="#">Contáctanos</a>
+  </nav>
+  <div class="header-actions">
+    <div class="usuario-info" *ngIf="usuarioActual">
+      <span>Hola, {{usuarioActual.nombre}}</span>
+      <button class="btn-logout" (click)="logout()">Cerrar Sesión</button>
+    </div>
+    <button class="btn-login" routerLink="/login" *ngIf="!usuarioActual">
+      👤 Iniciar Sesión
+    </button>
+    <button class="cart-button" routerLink="/carrito">
+      🛒 Carrito
+      <span class="cart-count">{{cartCount}}</span>
+    </button>
+  </div>
+</header>
+
+<!-- CONTENIDO DINÁMICO -->
+<router-outlet></router-outlet>
+
+<!-- FOOTER -->
+<footer>
+  ROYEM S.A.C. © 2025 · Cajamarca, Perú · WhatsApp: +51 9xx xxx xxx · Correo: ventas&#64;royem.com
+</footer>

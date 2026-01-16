@@ -1,0 +1,50 @@
+<div class="pedidos-container">
+  <h1>Mis Pedidos</h1>
+
+  <div class="cargando" *ngIf="cargando">
+    <p>Cargando pedidos...</p>
+  </div>
+
+  <div class="sin-pedidos" *ngIf="!cargando && ordenes.length === 0">
+    <p>No tienes pedidos realizados</p>
+    <button routerLink="/" class="btn-comprar">Comenzar a comprar</button>
+  </div>
+
+  <div class="pedidos-lista" *ngIf="!cargando && ordenes.length > 0">
+    <div class="pedido-card" *ngFor="let orden of ordenes">
+      <div class="pedido-header">
+        <div class="pedido-info">
+          <h3>Pedido #{{orden.id}}</h3>
+          <p class="pedido-fecha">{{formatearFecha(orden.fecha!)}}</p>
+        </div>
+        <div class="pedido-estado">
+          <span class="badge-estado" [ngClass]="getEstadoClass(orden.estado!)">
+            {{orden.estado}}
+          </span>
+        </div>
+      </div>
+
+      <div class="pedido-detalles">
+        <div class="detalle-item" *ngFor="let detalle of orden.detalles">
+          <img [src]="detalle.producto.imagen" [alt]="detalle.producto.nombre" class="detalle-imagen">
+          <div class="detalle-info">
+            <h4>{{detalle.producto.nombre}}</h4>
+            <p>Cantidad: {{detalle.cantidad}}</p>
+            <p class="detalle-precio">S/ {{detalle.subtotal.toFixed(2)}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pedido-footer">
+        <div class="pedido-direccion">
+          <strong>Dirección de envío:</strong>
+          <p>{{orden.direccionEnvio}}</p>
+        </div>
+        <div class="pedido-total">
+          <span>Total:</span>
+          <span class="total-monto">S/ {{orden.total.toFixed(2)}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

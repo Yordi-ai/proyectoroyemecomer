@@ -1,0 +1,164 @@
+.carrito-container {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.carrito-container h2 {
+  color: #003366;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+
+.carrito-vacio {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.carrito-vacio p:first-child {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.carrito-items {
+  margin-bottom: 30px;
+}
+
+.carrito-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.item-imagen {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  background-color: #f0f0f0;
+}
+
+.item-info {
+  flex: 2;
+}
+
+.item-info h3 {
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+  color: #222;
+}
+
+.item-categoria {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+.item-precio {
+  color: #00b894;
+  font-weight: bold;
+}
+
+.item-cantidad {
+  flex: 1;
+  text-align: center;
+}
+
+.item-subtotal {
+  flex: 1;
+  text-align: right;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #003366;
+}
+
+.btn-eliminar {
+  background-color: #d63031;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.3s;
+}
+
+.btn-eliminar:hover {
+  background-color: #e74c3c;
+}
+
+.carrito-resumen {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.resumen-linea {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 1rem;
+}
+
+.resumen-linea.total {
+  border-top: 2px solid #003366;
+  margin-top: 10px;
+  padding-top: 15px;
+  font-size: 1.3rem;
+  color: #003366;
+}
+
+.carrito-acciones {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.btn-limpiar, .btn-comprar {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-limpiar {
+  background-color: #fff;
+  color: #003366;
+  border: 2px solid #003366;
+}
+
+.btn-limpiar:hover {
+  background-color: #003366;
+  color: #fff;
+}
+
+.btn-comprar {
+  background-color: #00b894;
+  color: #fff;
+}
+
+.btn-comprar:hover {
+  background-color: #00a085;
+}
+
+@media (max-width: 768px) {
+  .carrito-item {
+    flex-wrap: wrap;
+  }
+  
+  .item-cantidad, .item-subtotal {
+    flex-basis: 100%;
+    text-align: left;
+    margin-top: 10px;
+  }
+}

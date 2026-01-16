@@ -1,0 +1,86 @@
+<div class="checkout-container">
+  <h1>Finalizar Compra</h1>
+
+  <div class="checkout-contenido">
+    <!-- RESUMEN DEL PEDIDO -->
+    <div class="resumen-pedido">
+      <h2>Resumen del Pedido</h2>
+      
+      <div class="items-resumen">
+        <div class="item-resumen" *ngFor="let item of items">
+          <img [src]="item.producto.imagen" [alt]="item.producto.nombre" class="item-imagen">
+          <div class="item-info">
+            <h4>{{item.producto.nombre}}</h4>
+            <p>Cantidad: {{item.cantidad}}</p>
+            <p class="precio">S/ {{(item.producto.precio * item.cantidad).toFixed(2)}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="total-pedido">
+        <span>Total:</span>
+        <span class="total-monto">S/ {{total.toFixed(2)}}</span>
+      </div>
+    </div>
+
+    <!-- FORMULARIO DE ENVÍO -->
+    <div class="formulario-envio">
+      <h2>Datos de Envío</h2>
+
+      <form (ngSubmit)="finalizarCompra()">
+        <div class="form-group">
+          <label>Nombre Completo *</label>
+          <input 
+            type="text" 
+            [(ngModel)]="datosEnvio.nombreCliente" 
+            name="nombreCliente"
+            placeholder="Juan Pérez"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label>Email *</label>
+          <input 
+            type="email" 
+            [(ngModel)]="datosEnvio.emailCliente" 
+            name="emailCliente"
+            placeholder="correo@ejemplo.com"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono *</label>
+          <input 
+            type="tel" 
+            [(ngModel)]="datosEnvio.telefonoCliente" 
+            name="telefonoCliente"
+            placeholder="+51 999 999 999"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label>Dirección de Envío *</label>
+          <textarea 
+            [(ngModel)]="datosEnvio.direccionEnvio" 
+            name="direccionEnvio"
+            placeholder="Calle, Número, Distrito, Ciudad"
+            rows="3"
+            required></textarea>
+        </div>
+
+        <div class="error-message" *ngIf="error">
+          ⚠️ {{error}}
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-volver" (click)="volver()">
+            ← Volver al carrito
+          </button>
+          <button type="submit" class="btn-finalizar" [disabled]="cargando">
+            {{cargando ? 'Procesando...' : '✓ Confirmar Pedido'}}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+<div class="carrito-container">
+  <h2>Mi Carrito</h2>
+  
+  <div *ngIf="items.length === 0" class="carrito-vacio">
+    <p>Tu carrito está vacío</p>
+    <p>¡Agrega productos para comenzar tu compra!</p>
+  </div>
+
+  <div *ngIf="items.length > 0">
+    <div class="carrito-items">
+      <div class="carrito-item" *ngFor="let item of items">
+        <img [src]="item.producto.imagen" [alt]="item.producto.nombre" class="item-imagen">
+        <div class="item-info">
+          <h3>{{item.producto.nombre}}</h3>
+          <p class="item-categoria">{{item.producto.categoria}}</p>
+          <p class="item-precio">S/ {{item.producto.precio.toFixed(2)}}</p>
+        </div>
+        <div class="item-cantidad">
+          <span>Cantidad: {{item.cantidad}}</span>
+        </div>
+        <div class="item-subtotal">
+          <p>S/ {{(item.producto.precio * item.cantidad).toFixed(2)}}</p>
+        </div>
+        <button class="btn-eliminar" (click)="eliminarItem(item.producto.id)">🗑️</button>
+      </div>
+    </div>
+
+    <div class="carrito-resumen">
+      <div class="resumen-linea">
+        <span>Total de productos:</span>
+        <span>{{items.length}}</span>
+      </div>
+      <div class="resumen-linea total">
+        <span><strong>Total a pagar:</strong></span>
+        <span><strong>S/ {{total.toFixed(2)}}</strong></span>
+      </div>
+      <div class="carrito-acciones">
+        <button class="btn-limpiar" (click)="limpiarCarrito()">Vaciar carrito</button>
+        <button class="btn-comprar" routerLink="/checkout">Finalizar compra</button>
+      </div>
+    </div>
+  </div>
+</div>
