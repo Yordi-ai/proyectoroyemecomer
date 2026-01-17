@@ -8,16 +8,39 @@ import { AdminComponent } from './components/admin/admin.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { MisPedidosComponent } from './components/mis-pedidos/mis-pedidos.component';
 import { AdminPedidosComponent } from './components/admin-pedidos/admin-pedidos.component';
+import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'producto/:id', component: ProductoDetalleComponent },
   { path: 'carrito', component: CarritoComponent },
-  { path: 'checkout', component: CheckoutComponent },
-  { path: 'mis-pedidos', component: MisPedidosComponent },
   { path: 'login', component: LoginComponent },
   { path: 'registro', component: RegistroComponent },
-  { path: 'admin', component: AdminComponent },
-  { path: 'admin/pedidos', component: AdminPedidosComponent },
+  
+  // Rutas protegidas - requieren autenticación
+  { 
+    path: 'checkout', 
+    component: CheckoutComponent,
+    canActivate: [authGuard]
+  },
+  { 
+    path: 'mis-pedidos', 
+    component: MisPedidosComponent,
+    canActivate: [authGuard]
+  },
+  
+  // Rutas protegidas - solo ADMIN
+  { 
+    path: 'admin', 
+    component: AdminComponent,
+    canActivate: [adminGuard]
+  },
+  { 
+    path: 'admin/pedidos', 
+    component: AdminPedidosComponent,
+    canActivate: [adminGuard]
+  },
+  
   { path: '**', redirectTo: '' }
 ];

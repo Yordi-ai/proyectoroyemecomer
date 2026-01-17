@@ -41,14 +41,19 @@
   
   <div class="products-grid" id="productsGrid">
     <div class="product-card" *ngFor="let producto of productos">
-  <div class="producto-clickeable" [routerLink]="['/producto', producto.id]">
-    <div class="product-image">
-      <img [src]="producto.imagen" [alt]="producto.nombre" *ngIf="producto.imagen" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-      <span *ngIf="!producto.imagen">Imagen del producto</span>
+      <div class="producto-clickeable" [routerLink]="['/producto', producto.id]">
+        <div class="product-image">
+          <img 
+            [src]="obtenerUrlImagen(producto.imagen)" 
+            [alt]="producto.nombre"
+            onerror="this.src='https://via.placeholder.com/300?text=Sin+Imagen'"
+            style="max-width: 100%; max-height: 100%; object-fit: contain;">
+        </div>
+        <div class="product-name">{{producto.nombre}}</div>
+        <div class="product-brand">{{producto.categoria}}</div>
+        <div class="product-price">S/ {{producto.precio.toFixed(2)}}</div>
+      </div>
+      <button (click)="addToCart(producto)">Añadir al carrito</button>
     </div>
-    <div class="product-name">{{producto.nombre}}</div>
-    <div class="product-brand">{{producto.categoria}}</div>
-    <div class="product-price">S/ {{producto.precio.toFixed(2)}}</div>
   </div>
-  <button (click)="addToCart(producto)">Añadir al carrito</button>
-</div>
+</main>

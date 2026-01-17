@@ -94,4 +94,11 @@ export class HomeComponent implements OnInit {
   scrollToProducts() {
     document.getElementById('productsGrid')?.scrollIntoView({ behavior: 'smooth' });
   }
+
+  // NUEVO: Obtener URL completa de imagen
+  obtenerUrlImagen(imagen: string): string {
+    if (!imagen) return 'https://via.placeholder.com/300?text=Sin+Imagen';
+    if (imagen.startsWith('http')) return imagen;
+    return 'http://localhost:8080' + imagen;
+  }
 }

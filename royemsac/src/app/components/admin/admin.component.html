@@ -41,14 +41,41 @@
           <textarea [(ngModel)]="nuevoProducto.descripcion" name="descripcion" rows="3"></textarea>
         </div>
 
+        <!-- NUEVO: Campo para subir imagen -->
         <div class="form-group full-width">
-          <label>URL de Imagen</label>
-          <input type="text" [(ngModel)]="nuevoProducto.imagen" name="imagen">
+          <label>Imagen del Producto</label>
+          <div class="imagen-upload">
+            <input 
+              type="file" 
+              id="imagenFile" 
+              (change)="onFileSelected($event)"
+              accept="image/*"
+              style="display: none"
+            >
+            <button 
+              type="button" 
+              class="btn-seleccionar-imagen"
+              onclick="document.getElementById('imagenFile').click()"
+            >
+              📷 Seleccionar Imagen
+            </button>
+            
+            <!-- Preview de la imagen -->
+            <div class="imagen-preview" *ngIf="imagenPreview">
+              <img [src]="imagenPreview" alt="Preview">
+              <p *ngIf="archivoSeleccionado">{{archivoSeleccionado.name}}</p>
+            </div>
+
+            <!-- Mensaje si está subiendo -->
+            <div *ngIf="subiendoImagen" class="subiendo-imagen">
+              ⏳ Subiendo imagen...
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn-guardar">
+        <button type="submit" class="btn-guardar" [disabled]="subiendoImagen">
           {{modoEdicion ? 'Actualizar' : 'Crear'}} Producto
         </button>
         <button type="button" class="btn-cancelar" (click)="cancelar()">
@@ -65,6 +92,7 @@
     <table>
       <thead>
         <tr>
+          <th>Imagen</th>
           <th>ID</th>
           <th>Nombre</th>
           <th>Categoría</th>
@@ -75,6 +103,16 @@
       </thead>
       <tbody>
         <tr *ngFor="let producto of productos">
+          <td>
+            <img 
+              *ngIf="producto.imagen" 
+              [src]="obtenerUrlImagen(producto.imagen)" 
+              alt="{{producto.nombre}}"
+              class="producto-imagen-mini"
+              onerror="this.src='https://via.placeholder.com/50'"
+            >
+            <span *ngIf="!producto.imagen">Sin imagen</span>
+          </td>
           <td>{{producto.id}}</td>
           <td>{{producto.nombre}}</td>
           <td><span class="badge">{{producto.categoria}}</span></td>

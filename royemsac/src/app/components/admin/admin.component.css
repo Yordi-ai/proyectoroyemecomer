@@ -237,4 +237,68 @@ td {
   th, td {
     padding: 8px;
   }
+
+}
+
+/* Estilos para upload de imágenes */
+.imagen-upload {
+  margin-top: 10px;
+}
+
+.btn-seleccionar-imagen {
+  background-color: #0984e3;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.btn-seleccionar-imagen:hover {
+  background-color: #0770c9;
+}
+
+.imagen-preview {
+  margin-top: 15px;
+  padding: 15px;
+  border: 2px dashed #e0e0e0;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.imagen-preview img {
+  max-width: 300px;
+  max-height: 300px;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+.imagen-preview p {
+  margin-top: 10px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.subiendo-imagen {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 6px;
+  color: #856404;
+  text-align: center;
+}
+
+.producto-imagen-mini {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.btn-guardar:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
