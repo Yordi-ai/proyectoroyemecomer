@@ -83,12 +83,40 @@
         </div>
       </div>
 
+      <!-- 🔑 CHECKBOX ADMINISTRADOR -->
+      <div class="checkbox-container">
+        <label class="checkbox-label">
+          <input 
+            type="checkbox" 
+            [(ngModel)]="esAdmin"
+            name="esAdmin"
+            class="checkbox-input">
+          <span class="checkbox-text">🔑 Registrar como Administrador</span>
+        </label>
+      </div>
+
+      <!-- 🔑 CREDENCIAL DE ADMIN -->
+      <div class="form-group" *ngIf="esAdmin" style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
+        <label for="credencial" style="color: #856404; font-weight: bold;">Credencial de Administrador *</label>
+        <input 
+          type="password" 
+          id="credencial" 
+          [(ngModel)]="credencialAdmin" 
+          name="credencialAdmin"
+          placeholder="Ingresa: ROYEM2024"
+          style="border: 2px solid #ffc107;"
+          required>
+        <small style="display: block; margin-top: 8px; color: #856404; font-style: italic;">
+          ℹ️ Credencial secreta: ROYEM2024
+        </small>
+      </div>
+
       <div class="error-message" *ngIf="error">
         ⚠️ {{error}}
       </div>
 
-      <button type="submit" class="btn-registro" [disabled]="cargando">
-        {{cargando ? 'Registrando...' : 'Crear Cuenta'}}
+      <button type="submit" class="btn-registro" [disabled]="cargando" [ngClass]="{'btn-admin': esAdmin}">
+        {{cargando ? '⏳ Registrando...' : (esAdmin ? '👑 Registrar Administrador' : '✨ Crear Cuenta')}}
       </button>
     </form>
 

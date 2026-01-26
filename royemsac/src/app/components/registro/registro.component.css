@@ -136,3 +136,122 @@
     grid-template-columns: 1fr;
   }
 }
+/* ============== CHECKBOX ADMINISTRADOR ============== */
+.checkbox-group {
+  margin: 25px 0 15px 0;
+  padding: 15px;
+  background: linear-gradient(135deg, rgba(0, 51, 102, 0.05), rgba(0, 184, 148, 0.05));
+  border-radius: 8px;
+  border: 2px dashed #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.checkbox-group:hover {
+  border-color: #003366;
+  background: linear-gradient(135deg, rgba(0, 51, 102, 0.08), rgba(0, 184, 148, 0.08));
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-input {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #003366;
+}
+
+.checkbox-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #003366;
+}
+
+/* ============== CREDENCIAL DE ADMIN ============== */
+.credencial-group {
+  animation: slideDown 0.3s ease;
+  background-color: #fff3cd;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #ffc107;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.credencial-input {
+  border: 2px solid #ffc107;
+}
+
+.credencial-input:focus {
+  border-color: #ff9800;
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.1);
+}
+
+.credencial-info {
+  display: block;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #fff;
+  border-radius: 6px;
+  color: #856404;
+  font-size: 0.85rem;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* ============== BOTÓN ADMIN STYLE ============== */
+.btn-admin {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-admin:hover:not(:disabled) {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+/* Checkbox */
+.checkbox-container {
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(0, 51, 102, 0.05);
+  border-radius: 8px;
+  border: 2px dashed #ddd;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.checkbox-input {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.checkbox-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #003366;
+}
+
+.btn-admin {
+  background: linear-gradient(135deg, #667eea, #764ba2) !important;
+}

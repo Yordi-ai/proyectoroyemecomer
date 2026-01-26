@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CarritoService } from './services/carrito.service';
-import { AuthService, Usuario } from './services/auth.service';
+import { AuthService } from './services/auth.service';
+import { UserModel } from './models/user.model';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,7 @@ import { AuthService, Usuario } from './services/auth.service';
 export class AppComponent implements OnInit {
   title = 'royemsac';
   cartCount = 0;
-  usuarioActual: Usuario | null = null;
+  usuarioActual: UserModel | null = null;
 
   constructor(
     private carritoService: CarritoService,
@@ -26,7 +27,7 @@ export class AppComponent implements OnInit {
       this.cartCount = this.carritoService.obtenerCantidadTotal();
     });
 
-    this.authService.usuario$.subscribe(usuario => {
+    this.authService.currentUser$.subscribe(usuario =>  {
       this.usuarioActual = usuario;
     });
   }

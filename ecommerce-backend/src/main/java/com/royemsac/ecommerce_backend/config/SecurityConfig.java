@@ -4,6 +4,8 @@ import com.royemsac.ecommerce_backend.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,6 +21,7 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity // Habilita @PreAuthorize en controllers
 public class SecurityConfig {
 
     @Autowired
@@ -36,18 +39,37 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Endpoints públicos
+                // ============== RUTAS PÚBLICAS ==============
                 .requestMatchers("/api/usuarios/registro", "/api/usuarios/login").permitAll()
-                .requestMatchers("/api/productos/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
+                .requestMatchers("/uploads/**").permitAll() // Para ver imágenes
                 
-                // Endpoints que requieren autenticación
-                .requestMatchers("/api/ordenes/usuario/**").authenticated()
+                // ============== RUTAS DE CLIENTE ==============
+                .requestMatchers("/api/ordenes/usuario/**").hasAnyRole("CLIENTE", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/ordenes").hasAnyRole("CLIENTE", "ADMIN")
+                .requestMatchers("/api/carrito/**").hasAnyRole("CLIENTE", "ADMIN")
                 
-                // Endpoints solo para ADMIN
-                .requestMatchers("/api/ordenes/**").hasRole("ADMIN")
+                // ============== RUTAS EXCLUSIVAS DE ADMIN ==============
+                // Gestión de productos
+                .requestMatchers(HttpMethod.POST, "/api/productos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasRole("ADMIN")
+                
+                // Gestión de órdenes
+                .requestMatchers(HttpMethod.GET, "/api/ordenes/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/ordenes/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/ordenes/**").hasRole("ADMIN")
+                
+                // Gestión de usuarios
                 .requestMatchers("/api/usuarios/**").hasRole("ADMIN")
                 
-                // Cualquier otra petición requiere autenticación
+                // Subida de imágenes (solo admin)
+                .requestMatchers("/api/imagenes/**").hasRole("ADMIN")
+                
+                // Dashboard admin
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                
+                // ============== CUALQUIER OTRA RUTA ==============
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -58,11 +80,33 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        
+        // Permitir localhost en desarrollo
+        configuration.setAllowedOrigins(Arrays.asList(
+            "http://localhost:4200",
+            "http://localhost:4201"
+        ));
+        
+        // Métodos HTTP permitidos
+        configuration.setAllowedMethods(Arrays.asList(
+            "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
+        ));
+        
+        // Headers permitidos
         configuration.setAllowedHeaders(Arrays.asList("*"));
+        
+        // Permitir credenciales (cookies, authorization headers, etc.)
         configuration.setAllowCredentials(true);
-        configuration.setExposedHeaders(Arrays.asList("Authorization"));
+        
+        // Headers expuestos al frontend
+        configuration.setExposedHeaders(Arrays.asList(
+            "Authorization", 
+            "Content-Type",
+            "Access-Control-Allow-Origin"
+        ));
+        
+        // Tiempo de caché de configuración CORS (1 hora)
+        configuration.setMaxAge(3600L);
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

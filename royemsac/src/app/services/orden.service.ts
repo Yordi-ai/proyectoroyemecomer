@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Producto } from './producto.service';
-import { Usuario } from './auth.service';
+import { UserModel } from '../models/user.model';
 
 export interface DetalleOrden {
   producto: Producto;
@@ -13,7 +13,7 @@ export interface DetalleOrden {
 
 export interface Orden {
   id?: number;
-  usuario?: Usuario;
+  usuario?: UserModel;
   fecha?: string;
   total: number;
   estado?: string;

@@ -21,7 +21,7 @@ export class MisPedidosComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const usuario = this.authService.obtenerUsuario();
+    const usuario = this.authService.getCurrentUser();
     
     if (!usuario) {
       alert('Debes iniciar sesión para ver tus pedidos');

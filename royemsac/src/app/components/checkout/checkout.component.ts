@@ -44,7 +44,7 @@ export class CheckoutComponent implements OnInit {
     }
     
     // Pre-llenar con datos del usuario si está logueado
-    const usuario = this.authService.obtenerUsuario();
+    const usuario = this.authService.getCurrentUser();
     if (usuario) {
       this.datosEnvio.nombreCliente = `${usuario.nombre} ${usuario.apellido}`;
       this.datosEnvio.emailCliente = usuario.email;
@@ -83,8 +83,10 @@ export class CheckoutComponent implements OnInit {
       ...this.datosEnvio,
       total: this.total,
       detalles: detalles,
-      usuario: this.authService.obtenerUsuario() || undefined
+    
+      usuario: this.authService.getCurrentUser() || undefined
     };
+
 
     this.ordenService.crearOrden(orden).subscribe({
       next: (response) => {

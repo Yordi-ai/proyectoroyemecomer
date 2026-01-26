@@ -1,0 +1,265 @@
+<div class="usuarios-container">
+  
+  <!-- HEADER -->
+  <div class="content-header">
+    <div class="header-info">
+      <h1>👥 Gestión de Usuarios</h1>
+      <p>Administra usuarios y permisos del sistema</p>
+    </div>
+    <button class="btn-primary" (click)="mostrarFormularioCrear()">
+      ➕ Crear Administrador
+    </button>
+  </div>
+
+  <!-- ESTADÍSTICAS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">👥</div>
+      <div class="stat-info">
+        <p class="stat-label">Total Usuarios</p>
+        <p class="stat-value">{{ estadisticas.total }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">👑</div>
+      <div class="stat-info">
+        <p class="stat-label">Administradores</p>
+        <p class="stat-value">{{ estadisticas.admins }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">👤</div>
+      <div class="stat-info">
+        <p class="stat-label">Clientes</p>
+        <p class="stat-value">{{ estadisticas.clientes }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">✅</div>
+      <div class="stat-info">
+        <p class="stat-label">Usuarios Activos</p>
+        <p class="stat-value">{{ estadisticas.activos }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="filters-section">
+    <div class="search-box">
+      <input 
+        type="text" 
+        [(ngModel)]="terminoBusqueda"
+        (ngModelChange)="aplicarFiltros()"
+        placeholder="🔍 Buscar por nombre, apellido o email..."
+        class="search-input">
+    </div>
+
+    <select 
+      [(ngModel)]="rolFiltro"
+      (ngModelChange)="aplicarFiltros()"
+      class="filter-select">
+      <option value="">👥 Todos los roles</option>
+      <option [value]="Role.ADMIN">👑 Administradores</option>
+      <option [value]="Role.CLIENTE">👤 Clientes</option>
+    </select>
+
+    <select 
+      [(ngModel)]="estadoFiltro"
+      (ngModelChange)="aplicarFiltros()"
+      class="filter-select">
+      <option value="">📊 Todos los estados</option>
+      <option value="true">✅ Activos</option>
+      <option value="false">❌ Inactivos</option>
+    </select>
+
+    <button class="btn-clear" (click)="limpiarFiltros()">
+      🔄 Limpiar
+    </button>
+  </div>
+
+  <!-- LOADING -->
+  <div *ngIf="cargando" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando usuarios...</p>
+  </div>
+
+  <!-- TABLA DE USUARIOS -->
+  <div *ngIf="!cargando" class="table-container">
+    <table class="usuarios-table">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Fecha Registro</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let usuario of usuariosFiltrados">
+          <td>
+            <div class="usuario-info">
+              <p class="usuario-nombre">
+                {{ obtenerIconoRol(usuario.rol) }}
+                {{ usuario.nombreCompleto }}
+              </p>
+              <p class="usuario-tel" *ngIf="usuario.telefono">
+                📞 {{ usuario.telefono }}
+              </p>
+            </div>
+          </td>
+          <td>
+            <span class="usuario-email">{{ usuario.email }}</span>
+          </td>
+          <td>
+            <span 
+              class="badge"
+              [class.badge-admin]="usuario.rol === Role.ADMIN"
+              [class.badge-cliente]="usuario.rol === Role.CLIENTE">
+              {{ RoleDisplay[usuario.rol] }}
+            </span>
+          </td>
+          <td>
+            <span 
+              class="badge"
+              [ngClass]="obtenerColorEstado(usuario.activo)">
+              {{ usuario.activo ? '✅ Activo' : '❌ Inactivo' }}
+            </span>
+          </td>
+          <td>
+            <span class="fecha">{{ formatearFecha(usuario.fechaRegistro) }}</span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button 
+                *ngIf="!usuario.activo"
+                class="btn-icon btn-activate" 
+                (click)="activarUsuario(usuario)"
+                title="Activar">
+                ✅
+              </button>
+              <button 
+                *ngIf="usuario.activo"
+                class="btn-icon btn-deactivate" 
+                (click)="desactivarUsuario(usuario)"
+                title="Desactivar">
+                🚫
+              </button>
+              <button 
+                class="btn-icon btn-delete" 
+                (click)="eliminarUsuario(usuario)"
+                title="Eliminar">
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <tr *ngIf="usuariosFiltrados.length === 0">
+          <td colspan="6" class="no-data">
+            <p>No se encontraron usuarios</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- MODAL CREAR ADMINISTRADOR -->
+<div *ngIf="mostrarFormulario" class="modal-overlay" (click)="cancelarFormulario()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    
+    <div class="modal-header">
+      <h2>👑 Crear Nuevo Administrador</h2>
+      <button class="btn-close" (click)="cancelarFormulario()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <form class="admin-form">
+        
+        <div class="form-group">
+          <label>Nombre *</label>
+          <input 
+            type="text" 
+            [(ngModel)]="nuevoAdmin.nombre"
+            name="nombre"
+            placeholder="Nombre"
+            class="form-input"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label>Apellido *</label>
+          <input 
+            type="text" 
+            [(ngModel)]="nuevoAdmin.apellido"
+            name="apellido"
+            placeholder="Apellido"
+            class="form-input"
+            required>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Email *</label>
+          <input 
+            type="email" 
+            [(ngModel)]="nuevoAdmin.email"
+            name="email"
+            placeholder="admin@royemsac.com"
+            class="form-input"
+            required>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Contraseña *</label>
+          <input 
+            type="password" 
+            [(ngModel)]="nuevoAdmin.password"
+            name="password"
+            placeholder="Mínimo 6 caracteres"
+            class="form-input"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input 
+            type="tel" 
+            [(ngModel)]="nuevoAdmin.telefono"
+            name="telefono"
+            placeholder="999999999"
+            class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label>Dirección</label>
+          <input 
+            type="text" 
+            [(ngModel)]="nuevoAdmin.direccion"
+            name="direccion"
+            placeholder="Dirección"
+            class="form-input">
+        </div>
+
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="cancelarFormulario()" [disabled]="cargando">
+        Cancelar
+      </button>
+      <button 
+        class="btn-primary" 
+        (click)="crearAdministrador()"
+        [disabled]="cargando">
+        {{ cargando ? '⏳ Creando...' : '👑 Crear Administrador' }}
+      </button>
+    </div>
+
+  </div>
+</div>

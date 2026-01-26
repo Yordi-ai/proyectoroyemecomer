@@ -47,7 +47,7 @@ public class ProductoController {
 
     @GetMapping("/buscar")
     public List<Producto> buscarProductos(@RequestParam String query) {
-        return productoService.buscarPorNombre(query);
+        return productoService.buscar(query);
     }
 
     @GetMapping("/categoria/{categoria}")

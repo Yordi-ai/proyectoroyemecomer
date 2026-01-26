@@ -30,11 +30,20 @@ export class LoginComponent {
     this.cargando = true;
     this.error = '';
 
-    this.authService.login(this.email, this.password).subscribe({
+    this.authService.login({ 
+      email: this.email,
+      password: this.password 
+    }).subscribe({
       next: (response) => {
         console.log('Login exitoso:', response);
-        alert(`Bienvenido ${response.usuario.nombre}! 🎉`);
-        this.router.navigate(['/']);
+        alert(`Bienvenido ${response.nombre}! 🎉`);
+        
+        // ✅ REDIRIGIR SEGÚN EL ROL
+        if (response.rol === 'ADMIN') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/']);
+        }
       },
       error: (err) => {
         console.error('Error en login:', err);

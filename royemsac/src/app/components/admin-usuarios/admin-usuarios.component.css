@@ -1,0 +1,98 @@
+/* Importar estilos base del admin */
+@import '../admin/admin.component.css';
+
+/* ============== ESTILOS ESPECÍFICOS ============== */
+
+.usuarios-container {
+  padding: 0;
+}
+
+.usuario-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.usuario-nombre {
+  font-weight: 600;
+  color: var(--primary-color, #003366);
+  font-size: 1rem;
+}
+
+.usuario-tel {
+  font-size: 0.85rem;
+  color: var(--gray-dark, #666);
+}
+
+.usuario-email {
+  color: var(--gray-dark, #666);
+  font-size: 0.9rem;
+}
+
+.fecha {
+  font-size: 0.9rem;
+  color: var(--gray-dark, #666);
+}
+
+/* ============== BADGES ESPECÍFICOS ============== */
+
+.badge-admin {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.badge-cliente {
+  background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+  color: white;
+}
+
+/* ============== BOTONES DE ACCIÓN ============== */
+
+.btn-activate {
+  background-color: rgba(0, 184, 148, 0.1);
+}
+
+.btn-activate:hover {
+  background-color: #00b894;
+}
+
+.btn-deactivate {
+  background-color: rgba(253, 203, 110, 0.1);
+}
+
+.btn-deactivate:hover {
+  background-color: #fdcb6e;
+}
+
+.btn-clear {
+  padding: 12px 24px;
+  background-color: var(--white, #ffffff);
+  color: var(--primary-color, #003366);
+  border: 2px solid var(--gray-medium, #e0e0e0);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-clear:hover {
+  border-color: var(--primary-color, #003366);
+  background-color: var(--primary-color, #003366);
+  color: var(--white, #ffffff);
+}
+
+/* ============== FORMULARIO DE ADMIN ============== */
+
+.admin-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* ============== RESPONSIVE ============== */
+
+@media (max-width: 768px) {
+  .admin-form {
+    grid-template-columns: 1fr;
+  }
+}

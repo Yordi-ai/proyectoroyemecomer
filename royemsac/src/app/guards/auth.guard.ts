@@ -9,15 +9,15 @@ export const authGuard: CanActivateFn = (
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.estaAutenticado()) {
-    if (!authService.tokenExpirado()) {
-      return true;
-    } else {
-      authService.logout();
-      return false;
-    }
+  // isAuthenticated() ya verifica token y expiración
+  if (authService.isAuthenticated()) {
+    return true;
   }
 
-  router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+  // Redirigir al login guardando la URL a la que intentaba acceder
+  router.navigate(['/login'], { 
+    queryParams: { returnUrl: state.url } 
+  });
+  
   return false;
 };

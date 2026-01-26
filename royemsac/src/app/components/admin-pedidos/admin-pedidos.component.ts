@@ -23,7 +23,7 @@ export class AdminPedidosComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const usuario = this.authService.obtenerUsuario();
+    const usuario = this.authService.getCurrentUser();
     
     if (!usuario || usuario.rol !== 'ADMIN') {
       alert('Acceso denegado. Solo administradores.');
