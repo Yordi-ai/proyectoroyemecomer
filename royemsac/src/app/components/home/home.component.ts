@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -15,10 +15,11 @@ interface ProductoProcesado extends Producto {
   selector: 'app-home',
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush // ✅ CRÍTICO - EVITA PARPADEOS
 })
 export class HomeComponent implements OnInit {
-  productos: ProductoProcesado[] = [];  // ✅ Cambiado
+  productos: ProductoProcesado[] = [];
   categorias: string[] = [];
   terminoBusqueda: string = '';
   categoriaSeleccionada: string = '';
@@ -28,7 +29,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private productoService: ProductoService,
-    private carritoService: CarritoService
+    private carritoService: CarritoService,
+    private cdr: ChangeDetectorRef // ✅ NECESARIO PARA OnPush
   ) {}
 
   ngOnInit() {
@@ -41,9 +43,11 @@ export class HomeComponent implements OnInit {
     this.productoService.obtenerTodos().subscribe({
       next: (data) => {
         this.productos = data.map(p => this.procesarProducto(p));
+        this.cdr.markForCheck(); // ✅ ACTUALIZAR VISTA
       },
       error: (err) => {
         console.error('Error al cargar productos:', err);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -52,9 +56,11 @@ export class HomeComponent implements OnInit {
     this.productoService.obtenerCategorias().subscribe({
       next: (data) => {
         this.categorias = data;
+        this.cdr.markForCheck(); // ✅ ACTUALIZAR VISTA
       },
       error: (err) => {
         console.error('Error al cargar categorías:', err);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -65,9 +71,11 @@ export class HomeComponent implements OnInit {
       this.productoService.buscarProductos(this.terminoBusqueda).subscribe({
         next: (data) => {
           this.productos = data.map(p => this.procesarProducto(p));
+          this.cdr.markForCheck(); // ✅ ACTUALIZAR VISTA
         },
         error: (err) => {
           console.error('Error al buscar productos:', err);
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -81,9 +89,11 @@ export class HomeComponent implements OnInit {
       this.productoService.obtenerPorCategoria(this.categoriaSeleccionada).subscribe({
         next: (data) => {
           this.productos = data.map(p => this.procesarProducto(p));
+          this.cdr.markForCheck(); // ✅ ACTUALIZAR VISTA
         },
         error: (err) => {
           console.error('Error al filtrar productos:', err);
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -149,9 +159,11 @@ export class HomeComponent implements OnInit {
   mostrarNotificacion(mensaje: string) {
     this.mensajeToast = mensaje;
     this.mostrarToast = true;
+    this.cdr.markForCheck(); // ✅ ACTUALIZAR VISTA
     
     setTimeout(() => {
       this.mostrarToast = false;
+      this.cdr.markForCheck(); // ✅ ACTUALIZAR VISTA
     }, 3000);
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductoService, Producto } from '../../services/producto.service';
@@ -7,6 +7,8 @@ import { ImagenService } from '../../services/imagen.service';
 import { UserModel } from '../../models/user.model';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 // ✅ NUEVA INTERFAZ
 interface ProductoConUrl extends Producto {
@@ -24,13 +26,14 @@ interface EstadisticasAdmin {
   selector: 'app-admin',
   imports: [CommonModule, FormsModule],
   templateUrl: './admin.component.html',
-  styleUrl: './admin.component.css'
+  styleUrl: './admin.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush // ✅ OPTIMIZACIÓN CRÍTICA
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent implements OnInit, OnDestroy {
   // Usuario actual
   currentUser: UserModel | null = null;
 
-  // Productos - ✅ ACTUALIZADO
+  // Productos
   productos: ProductoConUrl[] = [];
   productosFiltrados: ProductoConUrl[] = [];
   productoEditando: Producto | null = null;
@@ -46,12 +49,24 @@ export class AdminComponent implements OnInit {
   imagenPreview: string | null = null;
   subiendoImagen: boolean = false;
 
-  // Búsqueda y filtros
+  // Búsqueda y filtros - ✅ OPTIMIZADO CON SUBJECT
+  private searchSubject = new Subject<string>();
+  private searchSubscription?: Subscription;
   terminoBusqueda: string = '';
   categoriaFiltro: string = '';
   categorias: string[] = [];
 
-  // Estadísticas (opcional)
+  // Estadísticas - ✅ CACHEADAS
+  private _estadisticasCache: {
+    totalProductos: number;
+    productosConStock: number;
+    productosStockBajo: number;
+  } = {
+    totalProductos: 0,
+    productosConStock: 0,
+    productosStockBajo: 0
+  };
+
   estadisticas: EstadisticasAdmin = {
     totalProductos: 0,
     totalUsuarios: 0,
@@ -66,9 +81,10 @@ export class AdminComponent implements OnInit {
     private productoService: ProductoService,
     private authService: AuthService,
     private imagenService: ImagenService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef // ✅ NECESARIO PARA OnPush
   ) {
-    // Detectar cambios de ruta para mantener sidebar sincronizado
+    // Detectar cambios de ruta
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
@@ -80,11 +96,12 @@ export class AdminComponent implements OnInit {
       } else if (url === '/admin' || url.startsWith('/admin?')) {
         this.vistaActual = 'productos';
       }
+      this.cdr.markForCheck(); // ✅ FORZAR ACTUALIZACIÓN
     });
   }
 
   ngOnInit() {
-    // Verificar autenticación y rol de admin
+    // Verificar autenticación
     if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/login']);
       return;
@@ -99,16 +116,33 @@ export class AdminComponent implements OnInit {
     // Obtener usuario actual
     this.currentUser = this.authService.getCurrentUser();
     
+    // ✅ CONFIGURAR BÚSQUEDA CON DEBOUNCE (300ms)
+    this.searchSubscription = this.searchSubject.pipe(
+      debounceTime(300), // Espera 300ms después de que el usuario deja de escribir
+      distinctUntilChanged() // Solo si el valor cambió
+    ).subscribe(searchTerm => {
+      this.filtrarProductos();
+      this.cdr.markForCheck(); // ✅ ACTUALIZAR VISTA
+    });
+
     // Cargar datos iniciales
     this.cargarProductos();
     this.cargarEstadisticas();
   }
 
+  ngOnDestroy() {
+    // ✅ LIMPIAR SUBSCRIPCIONES
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+  }
+
   // ============== GESTIÓN DE PRODUCTOS ==============
 
-  // ✅ OPTIMIZADO
   cargarProductos() {
     this.cargando = true;
+    this.cdr.markForCheck();
+    
     this.productoService.obtenerTodos().subscribe({
       next: (data) => {
         // Pre-procesar las URLs de las imágenes
@@ -118,20 +152,40 @@ export class AdminComponent implements OnInit {
         }));
         this.productosFiltrados = this.productos;
         this.extraerCategorias();
-        this.estadisticas.totalProductos = data.length;
+        
+        // ✅ CALCULAR Y CACHEAR ESTADÍSTICAS
+        this.calcularEstadisticas();
+        
         this.cargando = false;
+        this.cdr.markForCheck(); // ✅ ACTUALIZAR VISTA
       },
       error: (err) => {
         console.error('Error al cargar productos:', err);
         alert('Error al cargar productos');
         this.cargando = false;
+        this.cdr.markForCheck();
       }
     });
+  }
+
+  // ✅ NUEVO: Calcular estadísticas una sola vez
+  private calcularEstadisticas() {
+    this._estadisticasCache.totalProductos = this.productos.length;
+    this._estadisticasCache.productosConStock = this.productos.filter(p => p.stock > 0).length;
+    this._estadisticasCache.productosStockBajo = this.productos.filter(p => p.stock > 0 && p.stock <= 10).length;
+    
+    this.estadisticas.totalProductos = this._estadisticasCache.totalProductos;
   }
 
   extraerCategorias() {
     const categoriasSet = new Set(this.productos.map(p => p.categoria).filter(c => c));
     this.categorias = Array.from(categoriasSet).sort();
+  }
+
+  // ✅ OPTIMIZADO: Ahora se llama con debounce
+  onSearchChange(value: string) {
+    this.terminoBusqueda = value;
+    this.searchSubject.next(value);
   }
 
   filtrarProductos() {
@@ -165,6 +219,7 @@ export class AdminComponent implements OnInit {
     this.mostrarFormulario = true;
     this.archivoSeleccionado = null;
     this.imagenPreview = null;
+    this.cdr.markForCheck();
   }
 
   editarProducto(producto: Producto) {
@@ -173,10 +228,10 @@ export class AdminComponent implements OnInit {
     this.mostrarFormulario = true;
     this.archivoSeleccionado = null;
     
-    // Mostrar imagen actual si existe
     if (producto.imagen) {
       this.imagenPreview = this.obtenerUrlImagen(producto.imagen);
     }
+    this.cdr.markForCheck();
   }
 
   // ============== MANEJO DE IMÁGENES ==============
@@ -185,13 +240,11 @@ export class AdminComponent implements OnInit {
     const file = event.target.files[0];
     if (!file) return;
 
-    // Validar que sea imagen
     if (!file.type.startsWith('image/')) {
       alert('Por favor selecciona una imagen válida (JPG, PNG, etc.)');
       return;
     }
 
-    // Validar tamaño (máximo 5MB)
     const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       alert('La imagen no debe superar los 5MB');
@@ -200,29 +253,32 @@ export class AdminComponent implements OnInit {
 
     this.archivoSeleccionado = file;
 
-    // Crear preview
     const reader = new FileReader();
     reader.onload = (e: any) => {
       this.imagenPreview = e.target.result;
+      this.cdr.markForCheck();
     };
     reader.readAsDataURL(file);
   }
 
   async subirImagen(): Promise<string> {
     if (!this.archivoSeleccionado) {
-      return this.nuevoProducto.imagen; // Mantener imagen actual
+      return this.nuevoProducto.imagen;
     }
 
     return new Promise((resolve, reject) => {
       this.subiendoImagen = true;
+      this.cdr.markForCheck();
       
       this.imagenService.subirImagen(this.archivoSeleccionado!).subscribe({
         next: (response) => {
           this.subiendoImagen = false;
+          this.cdr.markForCheck();
           resolve(response.url);
         },
         error: (err) => {
           this.subiendoImagen = false;
+          this.cdr.markForCheck();
           console.error('Error al subir imagen:', err);
           alert('Error al subir la imagen. Por favor intenta de nuevo.');
           reject(err);
@@ -239,13 +295,12 @@ export class AdminComponent implements OnInit {
     }
 
     this.cargando = true;
+    this.cdr.markForCheck();
 
     try {
-      // Subir imagen primero (si hay una nueva)
       const urlImagen = await this.subirImagen();
       this.nuevoProducto.imagen = urlImagen;
 
-      // Guardar producto
       this.productoService.guardar(this.nuevoProducto).subscribe({
         next: (data) => {
           const mensaje = this.modoEdicion 
@@ -256,16 +311,19 @@ export class AdminComponent implements OnInit {
           this.cargarProductos();
           this.cancelar();
           this.cargando = false;
+          this.cdr.markForCheck();
         },
         error: (err) => {
           console.error('Error al guardar producto:', err);
           alert('❌ Error al guardar el producto. Por favor intenta de nuevo.');
           this.cargando = false;
+          this.cdr.markForCheck();
         }
       });
     } catch (error) {
       console.error('Error en el proceso:', error);
       this.cargando = false;
+      this.cdr.markForCheck();
     }
   }
 
@@ -316,6 +374,7 @@ export class AdminComponent implements OnInit {
     this.modoEdicion = false;
     this.archivoSeleccionado = null;
     this.imagenPreview = null;
+    this.cdr.markForCheck();
   }
 
   // ============== UTILIDADES ==============
@@ -326,12 +385,13 @@ export class AdminComponent implements OnInit {
     return `http://localhost:8080${imagen}`;
   }
 
+  // ✅ OPTIMIZADO: Usa valores cacheados
   get productosConStock(): number {
-    return this.productos.filter(p => p.stock > 0).length;
+    return this._estadisticasCache.productosConStock;
   }
 
   get productosStockBajo(): number {
-    return this.productos.filter(p => p.stock > 0 && p.stock <= 10).length;
+    return this._estadisticasCache.productosStockBajo;
   }
 
   cambiarVista(vista: 'productos' | 'usuarios' | 'pedidos' | 'estadisticas') {
@@ -341,6 +401,7 @@ export class AdminComponent implements OnInit {
       this.router.navigate(['/admin/pedidos']);
     } else {
       this.vistaActual = vista;
+      this.cdr.markForCheck();
     }
   }
 
@@ -358,7 +419,7 @@ export class AdminComponent implements OnInit {
     return this.currentUser?.nombreCompleto || 'Administrador';
   }
 
-  // ✅ NUEVO: TrackBy para optimizar renderizado
+  // ✅ TrackBy para optimizar renderizado
   trackByProductoId(index: number, producto: ProductoConUrl): number {
     return producto.id;
   }

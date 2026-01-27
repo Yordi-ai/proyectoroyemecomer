@@ -104,10 +104,11 @@
       <!-- BÚSQUEDA Y FILTROS -->
       <div class="filters-section">
         <div class="search-box">
+          <!-- ✅ OPTIMIZADO: Usa (input) en lugar de (ngModelChange) para debounce -->
           <input 
             type="text" 
-            [(ngModel)]="terminoBusqueda"
-            (ngModelChange)="filtrarProductos()"
+            [ngModel]="terminoBusqueda"
+            (input)="onSearchChange($any($event.target).value)"
             placeholder="🔍 Buscar productos..."
             class="search-input">
         </div>
@@ -141,14 +142,15 @@
             </tr>
           </thead>
           <tbody>
-            <!-- ✅ AGREGADO: trackBy para optimizar -->
+            <!-- ✅ OPTIMIZADO: trackBy + lazy loading -->
             <tr *ngFor="let producto of productosFiltrados; trackBy: trackByProductoId">
               <td>
-                <!-- ✅ CAMBIADO: usa producto.imagenUrl pre-procesado -->
+                <!-- ✅ AGREGADO: loading="lazy" para cargar imágenes bajo demanda -->
                 <img 
                   [src]="producto.imagenUrl" 
                   [alt]="producto.nombre"
                   class="producto-img"
+                  loading="lazy"
                   onerror="this.src='assets/placeholder.jpg'">
               </td>
               <td>
