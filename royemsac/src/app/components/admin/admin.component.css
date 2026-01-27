@@ -2,15 +2,35 @@
    🔧 OPTIMIZACIONES CRÍTICAS - ADMIN PANEL
    ============================================ */
 
-/* ✅ CRÍTICO: Dimensiones fijas para imágenes de productos */
-.producto-img {
-  width: 60px !important;
-  height: 60px !important;
-  object-fit: cover;
-  border-radius: 6px;
-  display: block;
-  /* ✅ Previene layout shift durante carga */
+/* ✅ CRÍTICO: Contenedor con dimensiones fijas */
+.img-container {
+  width: 60px;
+  height: 60px;
   background: #f0f0f0;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* ✅ Previene cualquier cambio de tamaño */
+  flex-shrink: 0;
+}
+
+/* ✅ CRÍTICO: Imagen con transición suave */
+.producto-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* ✅ Fade in suave en lugar de aparecer bruscamente */
+  opacity: 0;
+  animation: fadeInImg 0.3s ease-in 0.1s forwards;
+}
+
+@keyframes fadeInImg {
+  to {
+    opacity: 1;
+  }
 }
 
 /* ✅ CRÍTICO: Fila de tabla con altura mínima fija */
@@ -27,6 +47,12 @@
   max-width: 80px;
   padding: 10px;
   text-align: center;
+  vertical-align: middle;
+}
+
+/* ✅ Asegurar que el contenedor esté centrado */
+.productos-table tbody tr td:first-child .img-container {
+  margin: 0 auto;
 }
 
 /* ============================================
