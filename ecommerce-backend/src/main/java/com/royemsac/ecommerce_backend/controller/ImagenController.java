@@ -1,5 +1,10 @@
 package com.royemsac.ecommerce_backend.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -9,17 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 @RestController
 @RequestMapping("/api/imagenes")
 @CrossOrigin(origins = "http://localhost:4200")
@@ -28,7 +22,7 @@ public class ImagenController {
     // ✅ Tu información de Supabase
     private static final String SUPABASE_URL = "https://ubwaoekciocabtxmmtzv.supabase.co";
     private static final String SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVid2FvZWtjaW9jYWJ0eG1tdHp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Njk0MjksImV4cCI6MjA4NDQ0NTQyOX0.LoDknkCl2O2_Hul7TGfD2Cdvy3l4drZKbJXwlEwv7nk";
-    private static final String BUCKET_NAME = "productos-imagenes";
+    private static final String BUCKET_NAME = "productos";
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
