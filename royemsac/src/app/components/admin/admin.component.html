@@ -273,20 +273,65 @@
         </div>
 
         <!-- CATEGORÍA -->
-        <div class="form-group">
-          <label>Categoría *</label>
-          <input 
-            type="text" 
-            [(ngModel)]="nuevoProducto.categoria"
-            name="categoria"
-            placeholder="Categoría"
-            class="form-input"
-            list="categorias-list"
-            required>
-          <datalist id="categorias-list">
-            <option *ngFor="let cat of categorias" [value]="cat">
-          </datalist>
-        </div>
+              <div class="form-group">
+                <label>Categoría * <span class="campo-obligatorio">(Obligatorio)</span></label>
+                <select 
+                  [(ngModel)]="nuevoProducto.categoria"
+                  name="categoria"
+                  class="form-input form-select"
+                  required>
+                  <option value="">-- Seleccione una categoría --</option>
+                  
+                  <!-- 🦺 SEGURIDAD INDUSTRIAL -->
+                  <optgroup label="🦺 SEGURIDAD INDUSTRIAL">
+                    <option value="Protección de pies">Protección de pies</option>
+                    <option value="Protección de manos">Protección de manos</option>
+                    <option value="Protección corporal">Protección corporal</option>
+                    <option value="Protección anticaída">Protección anticaída</option>
+                    <option value="Protección auditiva">Protección auditiva</option>
+                    <option value="Protección respiratoria">Protección respiratoria</option>
+                    <option value="Protección de cabeza, visual y facial">Protección de cabeza, visual y facial</option>
+                    <option value="Ropa de trabajo">Ropa de trabajo</option>
+                    <option value="Bloqueo y etiquetado">Bloqueo y etiquetado</option>
+                    <option value="Paños de seguridad industrial">Paños de seguridad industrial</option>
+                    <option value="Señalización">Señalización</option>
+                    <option value="Emergencia y primeros auxilios">Emergencia y primeros auxilios</option>
+                    <option value="Protección solar">Protección solar</option>
+                  </optgroup>
+                  
+                  <!-- ⚡ ELÉCTRICOS E INSTRUMENTACIÓN -->
+                  <optgroup label="⚡ ELÉCTRICOS E INSTRUMENTACIÓN">
+                    <option value="Materiales eléctricos">Materiales eléctricos</option>
+                    <option value="Iluminación">Iluminación</option>
+                    <option value="Conductores">Conductores</option>
+                    <option value="Cintas aislantes">Cintas aislantes</option>
+                    <option value="Elementos de protección eléctrica">Elementos de protección eléctrica</option>
+                    <option value="Amarracables">Amarracables</option>
+                  </optgroup>
+                  
+                  <!-- 🔧 HERRAMIENTAS INDUSTRIALES -->
+                  <optgroup label="🔧 HERRAMIENTAS INDUSTRIALES">
+                    <option value="Herramientas manuales">Herramientas manuales</option>
+                    <option value="Herramientas eléctricas">Herramientas eléctricas</option>
+                    <option value="Herramientas inalámbricas">Herramientas inalámbricas</option>
+                    <option value="Instrumentos de medición">Instrumentos de medición</option>
+                    <option value="Almacenamiento de herramientas">Almacenamiento de herramientas</option>
+                    <option value="Herramientas neumáticas">Herramientas neumáticas</option>
+                    <option value="Otras herramientas manuales y accesorios">Otras herramientas manuales y accesorios</option>
+                  </optgroup>
+                  
+                  <!-- 🛠️ MRO & MISCELÁNEOS -->
+                  <optgroup label="🛠️ MRO & MISCELÁNEOS">
+                    <option value="Mantenimiento y limpieza">Mantenimiento y limpieza</option>
+                    <option value="Ferretería industrial">Ferretería industrial</option>
+                    <option value="Materiales de construcción">Materiales de construcción</option>
+                    <option value="Abastecimiento integral">Abastecimiento integral</option>
+                    <option value="Equipamiento de campamentos">Equipamiento de campamentos</option>
+                  </optgroup>
+                </select>
+                <small class="form-hint">Selecciona la categoría más específica para el producto</small>
+              </div>
+
 
         <!-- PRECIO -->
         <div class="form-group">

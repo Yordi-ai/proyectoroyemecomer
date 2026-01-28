@@ -1,0 +1,84 @@
+<!-- ENCABEZADO DE CATEGORÍA -->
+<section class="categoria-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a routerLink="/">Inicio</a>
+      <span class="separator">›</span>
+      <span class="current">{{ nombreCategoria }}</span>
+    </div>
+    
+    <h1 class="categoria-titulo">{{ nombreCategoria }}</h1>
+    <p class="categoria-descripcion">{{ obtenerDescripcionCategoria() }}</p>
+    
+    <div class="categoria-stats">
+      <div class="stat-item">
+        <span class="stat-number">{{ productos.length }}</span>
+        <span class="stat-label">Productos</span>
+      </div>
+      <div class="stat-item" *ngIf="esCategoriaPrincipal">
+        <span class="stat-badge">Categoría Principal</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOADING -->
+<div class="loading-container" *ngIf="cargando">
+  <div class="spinner"></div>
+  <p>Cargando productos...</p>
+</div>
+
+<!-- PRODUCTOS -->
+<section class="productos-section" *ngIf="!cargando">
+  <div class="container">
+    <!-- SIN RESULTADOS -->
+    <div *ngIf="productos.length === 0" class="empty-state">
+      <div class="empty-icon">📦</div>
+      <h3>No hay productos disponibles</h3>
+      <p>No se encontraron productos en la categoría "{{ nombreCategoria }}"</p>
+      <button class="btn-primary" routerLink="/">Volver al inicio</button>
+    </div>
+    
+    <!-- GRID DE PRODUCTOS -->
+    <div class="products-grid" *ngIf="productos.length > 0">
+      <div class="product-card" *ngFor="let producto of productos; trackBy: trackByProductoId">
+        
+        <!-- Parte clickeable -->
+        <div class="product-clickable" [routerLink]="['/producto', producto.id]">
+          <div class="product-image">
+            <!-- ✅ SIN onerror para evitar loops -->
+            <img 
+              [src]="producto.imagenUrl" 
+              [alt]="producto.nombre"
+              loading="lazy">
+            <span class="product-badge">{{ producto.categoria }}</span>
+          </div>
+          
+          <div class="product-info">
+            <h3 class="product-name">{{ producto.nombre }}</h3>
+            <p class="product-category">{{ producto.categoria }}</p>
+          </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="product-footer">
+          <div class="product-price">
+            <span class="price-currency">S/</span>
+            <span class="price-amount">{{ producto.precio.toFixed(2) }}</span>
+          </div>
+          <button class="btn-add-cart" (click)="addToCart(producto)">
+            🛒 Añadir
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOAST -->
+<div class="toast-container" *ngIf="mostrarToast">
+  <div class="toast">
+    <span class="toast-icon">✅</span>
+    <span class="toast-message">{{ mensajeToast }}</span>
+  </div>
+</div>

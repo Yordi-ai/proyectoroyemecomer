@@ -1,26 +1,60 @@
 <!-- HEADER -->
-<header>
-  <div class="logo" routerLink="/">ROYEM S.A.C. - EPP & Ferretería</div>
-  <nav>
+<header class="header-verde">
+  <div class="header-top">
+    <div class="logo" routerLink="/">ROYEM S.A.C. - EPP & Ferretería</div>
+    
+    <div class="header-actions">
+      <div class="usuario-info" *ngIf="usuarioActual">
+        <span>Hola, {{usuarioActual.nombre}}</span>
+        <button class="btn-logout" (click)="logout()">Cerrar Sesión</button>
+      </div>
+      <button class="btn-login" routerLink="/login" *ngIf="!usuarioActual">
+        👤 Iniciar Sesión
+      </button>
+      <button class="cart-button" routerLink="/carrito">
+        🛒 Carrito
+        <span class="cart-count">{{cartCount}}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- BARRA DE NAVEGACIÓN VERDE -->
+  <nav class="nav-verde">
     <a routerLink="/">Inicio</a>
     <a routerLink="/mis-pedidos" *ngIf="usuarioActual">Mis Pedidos</a>
-    <a href="#">Productos</a>
+    <a routerLink="/admin" *ngIf="esAdmin()" class="admin-link">🛡️ Administrador</a>
+    
+    <!-- ✅ MENÚ DESPLEGABLE DE CATEGORÍAS -->
+    <div class="dropdown-categorias" 
+         (mouseenter)="mostrarMenuProductos = true" 
+         (mouseleave)="mostrarMenuProductos = false">
+      <a class="dropdown-trigger">
+        Categorías 
+        <span class="dropdown-arrow">▼</span>
+      </a>
+      
+      <!-- MEGA MENÚ VERDE FLOTANTE -->
+      <div class="mega-menu-verde" *ngIf="mostrarMenuProductos">
+        <div class="categorias-grid">
+          <!-- COLUMNA DE CATEGORÍA -->
+          <div class="categoria-column" *ngFor="let cat of categoriasMenu; let last = last" [class.ultima-columna]="last">
+            <h3 class="categoria-titulo" (click)="navegarACategoria(cat.nombre)">
+              {{ cat.nombre }}
+            </h3>
+            
+            <ul class="subcategorias-list">
+              <li *ngFor="let sub of cat.subcategorias">
+                <a (click)="navegarACategoria(sub)">{{ sub }}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <a href="#">Nosotros</a>
     <a href="#">Contáctanos</a>
   </nav>
-  <div class="header-actions">
-    <div class="usuario-info" *ngIf="usuarioActual">
-      <span>Hola, {{usuarioActual.nombre}}</span>
-      <button class="btn-logout" (click)="logout()">Cerrar Sesión</button>
-    </div>
-    <button class="btn-login" routerLink="/login" *ngIf="!usuarioActual">
-      👤 Iniciar Sesión
-    </button>
-    <button class="cart-button" routerLink="/carrito">
-      🛒 Carrito
-      <span class="cart-count">{{cartCount}}</span>
-    </button>
-  </div>
 </header>
 
 <!-- CONTENIDO DINÁMICO -->

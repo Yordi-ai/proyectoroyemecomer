@@ -22,7 +22,7 @@ public class ImagenController {
     // ✅ Tu información de Supabase
     private static final String SUPABASE_URL = "https://ubwaoekciocabtxmmtzv.supabase.co";
     private static final String SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVid2FvZWtjaW9jYWJ0eG1tdHp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Njk0MjksImV4cCI6MjA4NDQ0NTQyOX0.LoDknkCl2O2_Hul7TGfD2Cdvy3l4drZKbJXwlEwv7nk";
-    private static final String BUCKET_NAME = "productos";
+    private static final String BUCKET_NAME = "productos-imagenes"; // ✅ CAMBIO AQUÍ
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
