@@ -1,75 +1,89 @@
 package com.royemsac.ecommerce_backend.controller;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/imagenes")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ImagenController {
 
-    @Value("${upload.path}")
-    private String uploadPath;
+    // ✅ Tu información de Supabase
+    private static final String SUPABASE_URL = "https://ubwaoekciocabtxmmtzv.supabase.co";
+    private static final String SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVid2FvZWtjaW9jYWJ0eG1tdHp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Njk0MjksImV4cCI6MjA4NDQ0NTQyOX0.LoDknkCl2O2_Hul7TGfD2Cdvy3l4drZKbJXwlEwv7nk";
+    private static final String BUCKET_NAME = "productos-imagenes";
+
+    private final HttpClient httpClient = HttpClient.newHttpClient();
 
     @PostMapping("/upload")
     public ResponseEntity<?> subirImagen(@RequestParam("file") MultipartFile file) {
         try {
-            System.out.println("📤 Subiendo archivo: " + file.getOriginalFilename());
+            System.out.println("📤 Subiendo imagen a Supabase Storage: " + file.getOriginalFilename());
             
             // Validar que sea una imagen
             String contentType = file.getContentType();
             if (contentType == null || !contentType.startsWith("image/")) {
                 Map<String, String> error = new HashMap<>();
                 error.put("error", "El archivo debe ser una imagen");
-                System.err.println("❌ Archivo rechazado: no es una imagen");
                 return ResponseEntity.badRequest().body(error);
             }
 
-            // Generar nombre único para el archivo
+            // Generar nombre único
             String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            
+            // URL de Supabase Storage
+            String uploadUrl = SUPABASE_URL + "/storage/v1/object/" + BUCKET_NAME + "/" + fileName;
+            
+            // Crear request para Supabase
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(uploadUrl))
+                    .header("Authorization", "Bearer " + SUPABASE_KEY)
+                    .header("Content-Type", contentType)
+                    .header("apikey", SUPABASE_KEY)
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(file.getBytes()))
+                    .build();
 
-            // Crear directorio si no existe
-            Path uploadDir = Paths.get(uploadPath).toAbsolutePath().normalize();
-            if (!Files.exists(uploadDir)) {
-                Files.createDirectories(uploadDir);
-                System.out.println("📁 Directorio creado: " + uploadDir.toString());
+            // Enviar a Supabase
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200 || response.statusCode() == 201) {
+                // URL pública de la imagen
+                String publicUrl = SUPABASE_URL + "/storage/v1/object/public/" + BUCKET_NAME + "/" + fileName;
+                
+                System.out.println("✅ Imagen subida a Supabase: " + publicUrl);
+                
+                Map<String, String> responseMap = new HashMap<>();
+                responseMap.put("mensaje", "Imagen subida exitosamente");
+                responseMap.put("url", publicUrl);
+                responseMap.put("fileName", fileName);
+                
+                return ResponseEntity.ok(responseMap);
+            } else {
+                System.err.println("❌ Error de Supabase: " + response.statusCode() + " - " + response.body());
+                
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "Error al subir imagen a Supabase: " + response.body());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
             }
 
-            // Guardar archivo
-            Path filePath = uploadDir.resolve(fileName);
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            
-            System.out.println("✅ Archivo guardado en: " + filePath.toString());
-
-            // ✅ IMPORTANTE: Retornar la URL correcta
-            String imageUrl = "/api/imagenes/" + fileName;
-            
-            Map<String, String> response = new HashMap<>();
-            response.put("mensaje", "Imagen subida exitosamente");
-            response.put("url", imageUrl);
-            response.put("fileName", fileName);
-            
-            System.out.println("✅ URL generada: " + imageUrl);
-            
-            return ResponseEntity.ok(response);
-
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             System.err.println("❌ ERROR al subir imagen: " + e.getMessage());
             e.printStackTrace();
             
@@ -79,102 +93,38 @@ public class ImagenController {
         }
     }
 
-    @GetMapping("/{filename:.+}")
-    public ResponseEntity<Resource> obtenerImagen(@PathVariable String filename) {
+    @DeleteMapping("/{fileName:.+}")
+    public ResponseEntity<?> eliminarImagen(@PathVariable String fileName) {
         try {
-            System.out.println("🔍 Buscando imagen: " + filename);
+            System.out.println("🗑️ Eliminando imagen de Supabase: " + fileName);
             
-            Path uploadDir = Paths.get(uploadPath).toAbsolutePath().normalize();
-            Path filePath = uploadDir.resolve(filename).normalize();
+            String deleteUrl = SUPABASE_URL + "/storage/v1/object/" + BUCKET_NAME + "/" + fileName;
             
-            System.out.println("   Ruta completa: " + filePath.toString());
-            
-            // ✅ Verificar que el archivo no intente salir del directorio de uploads (seguridad)
-            if (!filePath.startsWith(uploadDir)) {
-                System.err.println("❌ Intento de acceso fuera del directorio de uploads");
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(deleteUrl))
+                    .header("Authorization", "Bearer " + SUPABASE_KEY)
+                    .header("apikey", SUPABASE_KEY)
+                    .DELETE()
+                    .build();
 
-            Resource resource = new UrlResource(filePath.toUri());
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (resource.exists() && resource.isReadable()) {
-                System.out.println("✅ Imagen encontrada y legible");
+            if (response.statusCode() == 200) {
+                System.out.println("✅ Imagen eliminada de Supabase");
                 
-                // Detectar el tipo de contenido
-                String contentType = Files.probeContentType(filePath);
-                if (contentType == null) {
-                    contentType = "application/octet-stream";
-                }
-
-                return ResponseEntity.ok()
-                        .contentType(MediaType.parseMediaType(contentType))
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
-                        .header(HttpHeaders.CACHE_CONTROL, "max-age=3600") // Cache por 1 hora
-                        .body(resource);
+                Map<String, String> responseMap = new HashMap<>();
+                responseMap.put("mensaje", "Imagen eliminada exitosamente");
+                return ResponseEntity.ok(responseMap);
             } else {
-                System.err.println("❌ Imagen no encontrada o no legible");
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            System.err.println("❌ ERROR al obtener imagen: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @DeleteMapping("/{filename:.+}")
-    public ResponseEntity<?> eliminarImagen(@PathVariable String filename) {
-        try {
-            System.out.println("🗑️ Eliminando imagen: " + filename);
-            
-            Path uploadDir = Paths.get(uploadPath).toAbsolutePath().normalize();
-            Path filePath = uploadDir.resolve(filename).normalize();
-            
-            // Verificar seguridad
-            if (!filePath.startsWith(uploadDir)) {
-                System.err.println("❌ Intento de eliminación fuera del directorio de uploads");
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
-            
-            boolean deleted = Files.deleteIfExists(filePath);
-            
-            if (deleted) {
-                System.out.println("✅ Imagen eliminada exitosamente");
-                Map<String, String> response = new HashMap<>();
-                response.put("mensaje", "Imagen eliminada exitosamente");
-                return ResponseEntity.ok(response);
-            } else {
-                System.err.println("⚠️ Imagen no encontrada para eliminar");
-                return ResponseEntity.notFound().build();
+                System.err.println("❌ Error al eliminar: " + response.statusCode());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
 
-        } catch (IOException e) {
-            System.err.println("❌ ERROR al eliminar imagen: " + e.getMessage());
-            e.printStackTrace();
+        } catch (IOException | InterruptedException e) {
+            System.err.println("❌ ERROR: " + e.getMessage());
             
             Map<String, String> error = new HashMap<>();
-            error.put("error", "Error al eliminar la imagen: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-        }
-    }
-
-    // ✅ NUEVO: Endpoint para verificar configuración
-    @GetMapping("/config")
-    public ResponseEntity<?> obtenerConfig() {
-        try {
-            Path uploadDir = Paths.get(uploadPath).toAbsolutePath().normalize();
-            
-            Map<String, Object> config = new HashMap<>();
-            config.put("uploadPath", uploadPath);
-            config.put("absolutePath", uploadDir.toString());
-            config.put("exists", Files.exists(uploadDir));
-            config.put("isDirectory", Files.isDirectory(uploadDir));
-            config.put("isWritable", Files.isWritable(uploadDir));
-            
-            return ResponseEntity.ok(config);
-        } catch (Exception e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
+            error.put("error", "Error al eliminar imagen: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
