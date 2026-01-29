@@ -1,6 +1,5 @@
 package com.royemsac.ecommerce_backend.repository;
 
-
 import com.royemsac.ecommerce_backend.model.Producto;
 
 import java.util.List;
@@ -13,6 +12,9 @@ import org.springframework.stereotype.Repository;
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
     List<Producto> findByNombreContainingIgnoreCase(String nombre);
     List<Producto> findByCategoria(String categoria);
+    
+    // ✅ NUEVO: Buscar productos destacados
+    List<Producto> findByDestacadoTrue();
     
     @Query("SELECT DISTINCT p.categoria FROM Producto p")
     List<String> findDistinctCategorias();

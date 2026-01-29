@@ -10,6 +10,7 @@ export interface Producto {
   stock: number;
   imagen: string;
   categoria: string;
+  destacado?: boolean; // ✅ AGREGAR ESTE CAMPO
 }
 
 @Injectable({
@@ -28,26 +29,32 @@ export class ProductoService {
     return this.http.get<Producto>(`${this.apiUrl}/${id}`);
   }
 
-  buscarProductos(query: string): Observable<Producto[]> {
-  return this.http.get<Producto[]>(`${this.apiUrl}/buscar?query=${query}`);
-}
-
-obtenerPorCategoria(categoria: string): Observable<Producto[]> {
-  return this.http.get<Producto[]>(`${this.apiUrl}/categoria/${categoria}`);
-}
-
-obtenerCategorias(): Observable<string[]> {
-  return this.http.get<string[]>(`${this.apiUrl}/categorias`);
-}
-guardar(producto: Producto): Observable<Producto> {
-  if (producto.id && producto.id > 0) {
-    return this.http.put<Producto>(`${this.apiUrl}/${producto.id}`, producto);
-  } else {
-    return this.http.post<Producto>(this.apiUrl, producto);
+  obtenerPorCategoria(categoria: string): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.apiUrl}/categoria/${categoria}`);
   }
-}
 
-eliminar(id: number): Observable<void> {
-  return this.http.delete<void>(`${this.apiUrl}/${id}`);
-}
+  buscarProductos(query: string): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.apiUrl}/buscar?q=${query}`);
+  }
+
+  obtenerCategorias(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/categorias`);
+  }
+
+  // ✅ NUEVO: Obtener productos destacados
+  obtenerDestacados(): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.apiUrl}/destacados`);
+  }
+
+  guardar(producto: Producto): Observable<Producto> {
+    if (producto.id) {
+      return this.http.put<Producto>(`${this.apiUrl}/${producto.id}`, producto);
+    } else {
+      return this.http.post<Producto>(this.apiUrl, producto);
+    }
+  }
+
+  eliminar(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

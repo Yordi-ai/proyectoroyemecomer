@@ -10,24 +10,31 @@ import { AdminComponent } from './components/admin/admin.component';
 import { AdminUsuariosComponent } from './components/admin-usuarios/admin-usuarios.component';
 import { AdminPedidosComponent } from './components/admin-pedidos/admin-pedidos.component';
 import { CategoriaProductosComponent } from './components/categoria-productos/categoria-productos.component';
-// ❌ COMENTADOS TEMPORALMENTE
-// import { AuthGuard } from './guards/auth.guard';
-// import { AdminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
+  // ✅ PÁGINA PRINCIPAL
   { path: '', component: HomeComponent },
+  
+  // ✅ AUTENTICACIÓN
   { path: 'login', component: LoginComponent },
   { path: 'registro', component: RegistroComponent },
-  { path: 'carrito', component: CarritoComponent },
-  { path: 'checkout', component: CheckoutComponent }, // ✅ Sin guard temporalmente
-  { path: 'producto/:id', component: ProductoDetalleComponent },
-  { path: 'mis-pedidos', component: MisPedidosComponent }, // ✅ Sin guard temporalmente
-  { path: 'admin', component: AdminComponent }, // ✅ Sin guard temporalmente
-  { path: 'admin/usuarios', component: AdminUsuariosComponent }, // ✅ Sin guard temporalmente
-  { path: 'admin/pedidos', component: AdminPedidosComponent }, // ✅ Sin guard temporalmente
   
-  // ✅ NUEVA RUTA PARA CATEGORÍAS
+  // ✅ CARRITO Y CHECKOUT
+  { path: 'carrito', component: CarritoComponent },
+  { path: 'checkout', component: CheckoutComponent },
+  
+  // ✅ PRODUCTOS
+  { path: 'producto/:id', component: ProductoDetalleComponent },
   { path: 'categoria/:categoria', component: CategoriaProductosComponent },
   
+  // ✅ USUARIO
+  { path: 'mis-pedidos', component: MisPedidosComponent },
+  
+  // ✅ ADMIN
+  { path: 'admin', component: AdminComponent },
+  { path: 'admin/usuarios', component: AdminUsuariosComponent },
+  { path: 'admin/pedidos', component: AdminPedidosComponent },
+  
+  // ✅ REDIRECT PARA RUTAS NO ENCONTRADAS
   { path: '**', redirectTo: '' }
 ];

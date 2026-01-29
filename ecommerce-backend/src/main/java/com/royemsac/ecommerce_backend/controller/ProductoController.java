@@ -59,4 +59,18 @@ public class ProductoController {
     public List<String> obtenerCategorias() {
         return productoService.obtenerCategorias();
     }
+
+    // ✅ NUEVO: Endpoint para productos destacados
+    @GetMapping("/destacados")
+    public ResponseEntity<List<Producto>> obtenerProductosDestacados() {
+        try {
+            List<Producto> destacados = productoService.obtenerDestacados();
+            System.out.println("📦 Productos destacados encontrados: " + destacados.size());
+            return ResponseEntity.ok(destacados);
+        } catch (Exception e) {
+            System.err.println("❌ Error al obtener productos destacados: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+    }
 }

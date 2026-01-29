@@ -18,4 +18,8 @@ public class Producto {
     private Integer stock;
     private String imagen;
     private String categoria;
+    
+    // ✅ AGREGAR ESTE CAMPO
+    @Column(name = "destacado")
+    private Boolean destacado = false;
 }

@@ -1,173 +1,326 @@
 <!-- HERO SECTION -->
-<section class="hero">
-  <div class="hero-background"></div>
-  <div class="hero-content">
-    <span class="hero-badge">🛡️ Protección Certificada</span>
-    <h1>Equipos de Protección Personal para <span>Minería e Industria</span></h1>
-    <p>
-      Protege a tu personal con productos certificados: respiradores, cascos, guantes,
-      lentes de seguridad, arneses y más.
-    </p>
-    <div class="hero-buttons">
-      <button class="btn-primary" (click)="scrollToProducts()">
-        📦 Ver Catálogo
+<section class="hero-modern">
+  <div class="hero-overlay"></div>
+  <div class="hero-content-wrapper">
+    <div class="hero-text">
+      <div class="hero-badge">
+        <span class="badge-icon">🛡️</span>
+        <span>Protección Certificada ANSI | OSHA</span>
+      </div>
+      <h1 class="hero-title">
+        Equipos de Protección Personal
+        <span class="highlight">para Minería e Industria</span>
+      </h1>
+      <p class="hero-description">
+        Protege a tu personal con productos certificados de la más alta calidad.
+        Contamos con más de 10 años de experiencia en el sector industrial.
+      </p>
+      <button class="btn-hero" (click)="scrollToProducts()">
+        <span class="btn-icon">📦</span>
+        Explorar Productos
       </button>
-      <a routerLink="/contacto" class="btn-secondary">
-        📞 Solicitar Cotización
-      </a>
     </div>
     
-    <div class="hero-stats">
-      <div class="stat">
-        <span class="stat-number">500+</span>
-        <span class="stat-label">Productos</span>
+    <div class="hero-stats-modern">
+      <div class="stat-modern">
+        <div class="stat-icon">📦</div>
+        <div class="stat-content">
+          <span class="stat-value">500+</span>
+          <span class="stat-text">Productos</span>
+        </div>
       </div>
-      <div class="stat">
-        <span class="stat-number">10+</span>
-        <span class="stat-label">Años</span>
+      <div class="stat-modern">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-content">
+          <span class="stat-value">10+</span>
+          <span class="stat-text">Años</span>
+        </div>
       </div>
-      <div class="stat">
-        <span class="stat-number">1000+</span>
-        <span class="stat-label">Clientes</span>
+      <div class="stat-modern">
+        <div class="stat-icon">👥</div>
+        <div class="stat-content">
+          <span class="stat-value">1000+</span>
+          <span class="stat-text">Clientes</span>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- BARRA DE BÚSQUEDA Y FILTROS -->
-<div class="search-section">
-  <div class="search-container">
-    <div class="search-input-wrapper">
-      <span class="search-icon">🔍</span>
+<!-- BARRA DE BÚSQUEDA -->
+<section class="search-bar-modern">
+  <div class="container-search">
+    <div class="search-wrapper-modern">
+      <div class="search-icon-box">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+      </div>
       <input 
-        type="text" 
-        [(ngModel)]="terminoBusqueda" 
+        type="text"
+        [(ngModel)]="terminoBusqueda"
         (keyup.enter)="buscarProductos()"
-        placeholder="Buscar productos... (ej: casco, guantes, mascarilla)"
-        class="search-input">
-    </div>
-    
-    <select [(ngModel)]="categoriaSeleccionada" (change)="filtrarPorCategoria()" class="filter-select">
-      <option value="">Todas las categorías</option>
-      <option *ngFor="let cat of categorias" [value]="cat">{{cat}}</option>
-    </select>
-    
-    <button (click)="buscarProductos()" class="btn-search">
-      🔍 Buscar
-    </button>
-    
-    <button (click)="limpiarFiltros()" class="btn-clear">
-      Limpiar filtros
-    </button>
-  </div>
-</div>
-
-<!-- CATEGORÍAS RÁPIDAS -->
-<section class="categories-section">
-  <div class="container">
-    <div class="categories-grid">
-      <div class="category-card" *ngFor="let cat of categorias" (click)="categoriaSeleccionada = cat; filtrarPorCategoria()">
-        <div class="category-icon">
-          {{ obtenerIconoCategoria(cat) }}
-        </div>
-        <span class="category-name">{{ cat }}</span>
-      </div>
+        placeholder="Buscar cascos, guantes, respiradores..."
+        class="search-input-modern">
+      <button class="btn-search-modern" (click)="buscarProductos()">
+        Buscar
+      </button>
     </div>
   </div>
 </section>
 
-<!-- PRODUCTOS -->
-<main class="products-section" id="productsGrid">
-  <div class="container">
-    <div class="section-header">
-      <h2 class="section-title">Productos Destacados</h2>
-      <span class="products-count">{{ productos.length }} productos encontrados</span>
-    </div>
+<!-- ✅ PRODUCTOS DESTACADOS - DOS CARRUSELES EN UNA SECCIÓN -->
+<section class="carousel-section-unified" id="productsCarousel">
+  <div class="container-carousel">
     
-    <!-- Sin resultados -->
-    <div *ngIf="productos.length === 0" class="empty-state">
+    <!-- Header único para ambos carruseles -->
+    <div class="carousel-header">
+      <h2 class="carousel-title">Productos Destacados</h2>
+      <p class="carousel-subtitle">{{ productosDestacados.length }} productos seleccionados</p>
+    </div>
+
+    <!-- Mensaje si no hay productos -->
+    <div *ngIf="productosDestacados.length === 0" class="empty-carousel">
       <div class="empty-icon">📦</div>
-      <h3>No se encontraron productos</h3>
-      <p>Intenta con otros términos de búsqueda o categoría</p>
-      <button class="btn-primary" (click)="limpiarFiltros()">Ver todos los productos</button>
+      <p>No hay productos destacados disponibles</p>
     </div>
-    
-    <!-- Grid de productos -->
-    <div class="products-grid" *ngIf="productos.length > 0">
-      <!-- ✅ AGREGADO: trackBy para optimizar renderizado -->
-      <div class="product-card" *ngFor="let producto of productos; trackBy: trackByProductoId">
+
+    <!-- Container unificado para ambos carruseles -->
+    <div class="carousels-container" *ngIf="productosDestacados.length > 0">
+      
+      <!-- ✅ CARRUSEL 1 - PRIMERA FILA -->
+      <div class="carousel-wrapper-unified">
         
-        <!-- Parte clickeable para ir al detalle -->
-        <div class="product-clickable" [routerLink]="['/producto', producto.id]">
-          
-          <!-- Imagen -->
-          <div class="product-image">
-            <!-- ✅ CAMBIADO: Ahora usa producto.imagenUrl pre-procesado -->
-            <img 
-              [src]="producto.imagenUrl" 
-              [alt]="producto.nombre"
-              onerror="this.src='https://via.placeholder.com/300x200?text=Sin+Imagen'"
-              loading="lazy">
-            
-            <!-- Badge de categoría -->
-            <span class="product-badge">{{ producto.categoria }}</span>
-          </div>
-          
-          <!-- Info del producto -->
-          <div class="product-info">
-            <h3 class="product-name">{{ producto.nombre }}</h3>
-            <p class="product-category">{{ producto.categoria }}</p>
+        <button class="carousel-btn carousel-btn-prev" (click)="prevSlide1()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
+
+        <div class="carousel-container">
+          <div class="carousel-track">
+            <div class="product-card-carousel" *ngFor="let producto of productosCarrusel1; trackBy: trackByProductoId">
+              
+              <div class="product-link-carousel" [routerLink]="['/producto', producto.id]">
+                <div class="product-image-carousel">
+                  <img [src]="producto.imagenUrl" [alt]="producto.nombre" loading="lazy">
+                </div>
+                
+                <div class="product-body-carousel">
+                  <span class="product-category-carousel">{{ producto.categoria }}</span>
+                  <h3 class="product-title-carousel">{{ producto.nombre }}</h3>
+                </div>
+              </div>
+              
+              <div class="product-footer-carousel">
+                <div class="price-carousel">
+                  <span class="currency-carousel">S/</span>
+                  <span class="amount-carousel">{{ producto.precio.toFixed(2) }}</span>
+                </div>
+                <button class="btn-cart-carousel" (click)="addToCart(producto); $event.stopPropagation()">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"/>
+                    <circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                  </svg>
+                  <span>Añadir</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        
-        <!-- Footer con precio y botón -->
-        <div class="product-footer">
-          <div class="product-price">
-            <span class="price-currency">S/</span>
-            <span class="price-amount">{{ producto.precio.toFixed(2) }}</span>
-          </div>
-          <button class="btn-add-cart" (click)="addToCart(producto)">
-            🛒 Añadir
-          </button>
-        </div>
+
+        <button class="carousel-btn carousel-btn-next" (click)="nextSlide1()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
       </div>
+
+      <!-- Indicadores carrusel 1 -->
+      <div class="carousel-indicators" *ngIf="totalSlides1 > 1">
+        <button 
+          *ngFor="let slide of [].constructor(totalSlides1); let i = index"
+          class="indicator-dot"
+          [class.active]="i === carouselIndex1"
+          (click)="goToSlide1(i)">
+        </button>
+      </div>
+
+      <!-- ✅ CARRUSEL 2 - SEGUNDA FILA (SIN SEPARADOR) -->
+      <div class="carousel-wrapper-unified">
+        
+        <button class="carousel-btn carousel-btn-prev" (click)="prevSlide2()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
+
+        <div class="carousel-container">
+          <div class="carousel-track">
+            <div class="product-card-carousel" *ngFor="let producto of productosCarrusel2; trackBy: trackByProductoId">
+              
+              <div class="product-link-carousel" [routerLink]="['/producto', producto.id]">
+                <div class="product-image-carousel">
+                  <img [src]="producto.imagenUrl" [alt]="producto.nombre" loading="lazy">
+                </div>
+                
+                <div class="product-body-carousel">
+                  <span class="product-category-carousel">{{ producto.categoria }}</span>
+                  <h3 class="product-title-carousel">{{ producto.nombre }}</h3>
+                </div>
+              </div>
+              
+              <div class="product-footer-carousel">
+                <div class="price-carousel">
+                  <span class="currency-carousel">S/</span>
+                  <span class="amount-carousel">{{ producto.precio.toFixed(2) }}</span>
+                </div>
+                <button class="btn-cart-carousel" (click)="addToCart(producto); $event.stopPropagation()">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"/>
+                    <circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                  </svg>
+                  <span>Añadir</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="carousel-btn carousel-btn-next" (click)="nextSlide2()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Indicadores carrusel 2 -->
+      <div class="carousel-indicators" *ngIf="totalSlides2 > 1">
+        <button 
+          *ngFor="let slide of [].constructor(totalSlides2); let i = index"
+          class="indicator-dot"
+          [class.active]="i === carouselIndex2"
+          (click)="goToSlide2(i)">
+        </button>
+      </div>
+
     </div>
   </div>
-</main>
+</section>
 
-<!-- FEATURES / POR QUÉ ELEGIRNOS -->
-<section class="features-section">
-  <div class="container">
-    <h2 class="section-title-light">¿Por qué elegir ROYEM S.A.C.?</h2>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">🛡️</div>
-        <h4>Productos Certificados</h4>
-        <p>Todos nuestros EPP cumplen con las normas ANSI, OSHA y certificaciones peruanas.</p>
+<!-- POR QUÉ ELEGIRNOS -->
+<section class="features-modern">
+  <div class="container-modern">
+    <h2 class="features-title">¿Por qué elegir ROYEM?</h2>
+    <div class="features-grid-modern">
+      
+      <div class="feature-card-modern">
+        <div class="feature-icon-modern">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h3>Productos Certificados</h3>
+        <p>Equipos que cumplen normas ANSI, OSHA y certificaciones internacionales</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">🚚</div>
-        <h4>Envío a Todo Perú</h4>
-        <p>Llegamos a todas las regiones del país. Envío gratis en compras mayores a S/500.</p>
+
+      <div class="feature-card-modern">
+        <div class="feature-icon-modern">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="1" y="3" width="15" height="13"/>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/>
+            <circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </div>
+        <h3>Envío a Todo Perú</h3>
+        <p>Cobertura nacional con envío gratis en compras mayores a S/500</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">💰</div>
-        <h4>Precios Competitivos</h4>
-        <p>Los mejores precios del mercado sin sacrificar la calidad de los productos.</p>
+
+      <div class="feature-card-modern">
+        <div class="feature-icon-modern">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <h3>Precios Competitivos</h3>
+        <p>Mejor relación calidad-precio del mercado sin sacrificar seguridad</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">🎯</div>
-        <h4>Asesoría Especializada</h4>
-        <p>Te ayudamos a elegir el EPP adecuado para tu industria y necesidades.</p>
+
+      <div class="feature-card-modern">
+        <div class="feature-icon-modern">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <h3>Asesoría Especializada</h3>
+        <p>Expertos que te ayudan a elegir el EPP ideal para tu industria</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- TOAST NOTIFICATION -->
-<div class="toast-container" *ngIf="mostrarToast">
-  <div class="toast">
-    <span class="toast-icon">✅</span>
-    <span class="toast-message">{{ mensajeToast }}</span>
+<!-- CONTACTO -->
+<section class="contact-modern">
+  <div class="container-modern">
+    <h2 class="contact-title">Contáctanos</h2>
+    <p class="contact-subtitle">Estamos aquí para ayudarte con tus necesidades de seguridad industrial</p>
+    
+    <div class="contact-grid-modern">
+      <a href="mailto:seguridadindustrial_royem@hotmail.com" class="contact-box">
+        <div class="contact-icon-modern email-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <div class="contact-info">
+          <span class="contact-label">Correo Electrónico</span>
+          <span class="contact-value">seguridadindustrial_royem&#64;hotmail.com</span>
+        </div>
+      </a>
+
+      <a href="https://wa.me/51931440451" target="_blank" class="contact-box">
+        <div class="contact-icon-modern whatsapp-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+          </svg>
+        </div>
+        <div class="contact-info">
+          <span class="contact-label">WhatsApp</span>
+          <span class="contact-value">+51 931 440 451</span>
+        </div>
+      </a>
+
+      <div class="contact-box">
+        <div class="contact-icon-modern location-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+        </div>
+        <div class="contact-info">
+          <span class="contact-label">Ubicación</span>
+          <span class="contact-value">Cajamarca, Perú</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOAST -->
+<div class="toast-modern" *ngIf="mostrarToast">
+  <div class="toast-content">
+    <svg class="toast-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    <span>{{ mensajeToast }}</span>
   </div>
 </div>

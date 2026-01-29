@@ -1,6 +1,5 @@
 package com.royemsac.ecommerce_backend.service;
 
-
 import com.royemsac.ecommerce_backend.model.Producto;
 import com.royemsac.ecommerce_backend.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +45,10 @@ public class ProductoService {
 
     public List<String> obtenerCategorias() {
         return productoRepository.findDistinctCategorias();
+    }
+
+    // ✅ NUEVO: Obtener productos destacados
+    public List<Producto> obtenerDestacados() {
+        return productoRepository.findByDestacadoTrue();
     }
 }
