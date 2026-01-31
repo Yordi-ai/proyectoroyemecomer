@@ -21,10 +21,11 @@ export class AppComponent implements OnInit {
   cartCount = 0;
   usuarioActual: UserModel | null = null;
   mostrarMenuProductos = false;
+  categoriaActivaIndex: number | null = null; // ✅ NUEVA PROPIEDAD
 
   categoriasMenu: CategoriaMenu[] = [
     {
-      nombre: 'Seguridad Industrial',
+      nombre: 'SEGURIDAD INDUSTRIAL',
       subcategorias: [
         'Protección de pies',
         'Protección de manos',
@@ -42,7 +43,7 @@ export class AppComponent implements OnInit {
       ]
     },
     {
-      nombre: 'Eléctricos e Instrumentación',
+      nombre: 'ELÉCTRICOS E INSTRUMENTACIÓN',
       subcategorias: [
         'Materiales eléctricos',
         'Iluminación',
@@ -53,7 +54,7 @@ export class AppComponent implements OnInit {
       ]
     },
     {
-      nombre: 'Herramientas Industriales',
+      nombre: 'HERRAMIENTAS INDUSTRIALES',
       subcategorias: [
         'Herramientas manuales',
         'Herramientas eléctricas',
@@ -65,7 +66,7 @@ export class AppComponent implements OnInit {
       ]
     },
     {
-      nombre: 'MRO & Misceláneos',
+      nombre: 'MRO & MISCELÁNEOS',
       subcategorias: [
         'Mantenimiento y limpieza',
         'Ferretería industrial',
@@ -96,12 +97,22 @@ export class AppComponent implements OnInit {
     return this.authService.isAdmin();
   }
 
+  // ✅ NUEVO: Activar categoría específica
+  activarCategoria(index: number) {
+    this.categoriaActivaIndex = index;
+  }
+
+  // ✅ NUEVO: Desactivar categoría
+  desactivarCategoria() {
+    this.categoriaActivaIndex = null;
+  }
+
   // ✅ ACTUALIZADO: Navegar a página dedicada de categoría
   navegarACategoria(categoria: string) {
-    // Codificar la categoría para URL (maneja espacios y caracteres especiales)
     const categoriaEncoded = encodeURIComponent(categoria);
     this.router.navigate(['/categoria', categoriaEncoded]);
     this.mostrarMenuProductos = false;
+    this.categoriaActivaIndex = null; // ✅ RESETEAR
   }
 
   logout() {

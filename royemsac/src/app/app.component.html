@@ -12,7 +12,6 @@
         👤 Iniciar Sesión
       </button>
       
-      <!-- ✅ CARRITO: Solo visible para CLIENTES (no para ADMIN) -->
       <button class="cart-button" routerLink="/carrito" *ngIf="usuarioActual && !esAdmin()">
         🛒 Carrito
         <span class="cart-count">{{cartCount}}</span>
@@ -24,37 +23,56 @@
   <nav class="nav-verde">
     <a routerLink="/">Inicio</a>
     
-    <!-- ✅ MIS PEDIDOS: Solo visible para CLIENTES (no para ADMIN) -->
     <a routerLink="/mis-pedidos" *ngIf="usuarioActual && !esAdmin()">Mis Pedidos</a>
     
-    <!-- ✅ ADMINISTRADOR: Solo visible para ADMIN -->
     <a routerLink="/admin" *ngIf="esAdmin()" class="admin-link">🛡️ Administrador</a>
     
-    <!-- ✅ CATEGORÍAS: Solo visible para CLIENTES o usuarios NO logueados (no para ADMIN) -->
+    <!-- ✅ CATEGORÍAS: MENÚ DESPLEGABLE MEJORADO -->
     <div class="dropdown-categorias" 
          *ngIf="!esAdmin()"
          (mouseenter)="mostrarMenuProductos = true" 
-         (mouseleave)="mostrarMenuProductos = false">
+         (mouseleave)="mostrarMenuProductos = false; desactivarCategoria()">
       <a class="dropdown-trigger">
         Categorías 
         <span class="dropdown-arrow">▼</span>
       </a>
       
-      <!-- MEGA MENÚ VERDE FLOTANTE -->
+      <!-- ✅ MEGA MENÚ VERDE CON DOS COLUMNAS -->
       <div class="mega-menu-verde" *ngIf="mostrarMenuProductos">
-        <div class="categorias-grid">
-          <!-- COLUMNA DE CATEGORÍA -->
-          <div class="categoria-column" *ngFor="let cat of categoriasMenu; let last = last" [class.ultima-columna]="last">
-            <h3 class="categoria-titulo" (click)="navegarACategoria(cat.nombre)">
+        <div class="menu-layout">
+          
+          <!-- ✅ COLUMNA IZQUIERDA: TÍTULOS PRINCIPALES -->
+          <div class="titulos-principales">
+            <div 
+              class="titulo-item" 
+              *ngFor="let cat of categoriasMenu; let i = index"
+              (mouseenter)="activarCategoria(i)"
+              [class.activo]="categoriaActivaIndex === i"
+              (click)="navegarACategoria(cat.nombre)">
               {{ cat.nombre }}
-            </h3>
-            
-            <ul class="subcategorias-list">
-              <li *ngFor="let sub of cat.subcategorias">
-                <a (click)="navegarACategoria(sub)">{{ sub }}</a>
-              </li>
-            </ul>
+              <span class="flecha-derecha">›</span>
+            </div>
           </div>
+
+          <!-- ✅ COLUMNA DERECHA: SUBCATEGORÍAS -->
+          <div class="subcategorias-panel">
+            <div *ngIf="categoriaActivaIndex !== null" class="subcategorias-contenido">
+              <h3 class="subcategorias-titulo">
+                {{ categoriasMenu[categoriaActivaIndex].nombre }}
+              </h3>
+              <ul class="subcategorias-list">
+                <li *ngFor="let sub of categoriasMenu[categoriaActivaIndex].subcategorias">
+                  <a (click)="navegarACategoria(sub)">{{ sub }}</a>
+                </li>
+              </ul>
+            </div>
+            
+            <!-- ✅ MENSAJE INICIAL -->
+            <div *ngIf="categoriaActivaIndex === null" class="mensaje-inicial">
+              <span>Selecciona una categoría</span>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
