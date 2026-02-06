@@ -239,10 +239,10 @@
 }
 
 /* ============================================
-   SECCIÓN UNIFICADA DE CARRUSELES
+   CARRUSEL ÚNICO
    ============================================ */
 
-.carousel-section-unified {
+.carousel-section {
   padding: 80px 20px;
   background: white;
 }
@@ -271,7 +271,6 @@
   font-weight: 500;
 }
 
-/* Estado vacío */
 .empty-carousel {
   text-align: center;
   padding: 60px 20px;
@@ -290,68 +289,92 @@
   font-size: 16px;
 }
 
-/* ✅ Container compacto para ambos carruseles */
-.carousels-container {
-  display: flex;
-  flex-direction: column;
-  gap: 32px; /* Reducido de 48px a 32px para diseño más compacto */
+.carousel-wrapper {
+  padding: 0 100px;
 }
 
-/* Wrapper individual para cada carrusel */
-.carousel-wrapper-unified {
+.carousel-container {
   position: relative;
-  display: flex;
-  align-items: center;
-  gap: 20px;
+  display: block;
 }
 
+/* Flechas */
 .carousel-btn {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
+  position: absolute !important;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 60px;
   background: white;
-  border: 2px solid var(--color-border);
-  display: flex;
+  border: 3px solid var(--color-primary);
+  border-radius: 50%;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  flex-shrink: 0;
-  z-index: 10;
-  box-shadow: var(--shadow-sm);
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.carousel-btn-prev {
+  left: -80px;
+}
+
+.carousel-btn-next {
+  right: -80px;
 }
 
 .carousel-btn:hover {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  transform: scale(1.1);
-  box-shadow: var(--shadow-md);
-}
-
-.carousel-btn:hover svg {
-  stroke: white;
+  transform: translateY(-50%) scale(1.15);
+  box-shadow: 0 8px 30px rgba(74, 124, 89, 0.4);
 }
 
 .carousel-btn svg {
-  stroke: var(--color-text);
-  transition: stroke 0.3s ease;
+  stroke: var(--color-primary);
+  stroke-width: 3;
+  width: 30px;
+  height: 30px;
+  transition: all 0.3s ease;
+  display: block !important;
+  fill: none !important;
+  pointer-events: none !important;
 }
 
-/* Container */
-.carousel-container {
-  flex: 1;
+.carousel-btn:hover svg {
+  stroke: white !important;
+}
+
+.carousel-viewport {
+  width: 100%;
   overflow: hidden;
   border-radius: var(--radius-lg);
 }
 
 .carousel-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-slide {
+  min-width: 100%;
+  flex-shrink: 0;
+}
+
+.products-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
 }
 
-/* Product Card */
-.product-card-carousel {
+/* ============================================
+   TARJETAS DE PRODUCTO
+   ============================================ */
+
+.product-card {
+  position: relative;
   background: white;
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -362,13 +385,13 @@
   border: 2px solid transparent;
 }
 
-.product-card-carousel:hover {
+.product-card:hover {
   transform: translateY(-8px);
   box-shadow: var(--shadow-lg);
   border-color: var(--color-primary);
 }
 
-.product-link-carousel {
+.product-link {
   cursor: pointer;
   flex: 1;
   display: flex;
@@ -377,7 +400,7 @@
   color: inherit;
 }
 
-.product-image-carousel {
+.product-image {
   position: relative;
   width: 100%;
   height: 240px;
@@ -385,7 +408,7 @@
   overflow: hidden;
 }
 
-.product-image-carousel img {
+.product-image img {
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -393,11 +416,11 @@
   transition: transform 0.4s ease;
 }
 
-.product-card-carousel:hover .product-image-carousel img {
+.product-card:hover .product-image img {
   transform: scale(1.08);
 }
 
-.product-body-carousel {
+.product-body {
   padding: 20px;
   flex: 1;
   display: flex;
@@ -405,7 +428,7 @@
   gap: 10px;
 }
 
-.product-category-carousel {
+.product-category {
   display: inline-block;
   background: rgba(74, 124, 89, 0.1);
   color: var(--color-primary-dark);
@@ -418,7 +441,7 @@
   align-self: flex-start;
 }
 
-.product-title-carousel {
+.product-title {
   font-size: 16px;
   font-weight: 700;
   color: var(--color-secondary);
@@ -430,7 +453,7 @@
   overflow: hidden;
 }
 
-.product-footer-carousel {
+.product-footer {
   padding: 16px 20px;
   background: var(--color-bg);
   border-top: 1px solid var(--color-border);
@@ -440,25 +463,25 @@
   gap: 12px;
 }
 
-.price-carousel {
+.price {
   display: flex;
   align-items: baseline;
   gap: 4px;
 }
 
-.currency-carousel {
+.currency {
   font-size: 14px;
   font-weight: 700;
   color: var(--color-text);
 }
 
-.amount-carousel {
+.amount {
   font-size: 24px;
   font-weight: 800;
   color: var(--color-primary);
 }
 
-.btn-cart-carousel {
+.btn-cart {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -474,13 +497,13 @@
   white-space: nowrap;
 }
 
-.btn-cart-carousel:hover {
+.btn-cart:hover {
   background: var(--color-primary-dark);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(74, 124, 89, 0.3);
 }
 
-.btn-cart-carousel svg {
+.btn-cart svg {
   stroke-width: 2.5;
 }
 
@@ -489,7 +512,7 @@
   display: flex;
   justify-content: center;
   gap: 12px;
-  margin-top: 20px;
+  margin-top: 32px;
 }
 
 .indicator-dot {
@@ -741,14 +764,14 @@
    ============================================ */
 
 @media (max-width: 1200px) {
-  .carousel-track {
+  .products-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
   }
 }
 
 @media (max-width: 900px) {
-  .carousel-track {
+  .products-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
@@ -762,37 +785,45 @@
   }
 
   .carousel-btn {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
   }
 
-  .carousels-container {
-    gap: 32px;
+  .carousel-wrapper {
+    padding: 0 70px;
   }
 }
 
 @media (max-width: 600px) {
-  .carousel-section-unified {
+  .carousel-section {
     padding: 60px 16px;
   }
 
-  .carousel-track {
+  .products-grid {
     grid-template-columns: 1fr;
     gap: 16px;
   }
 
-  .carousel-wrapper-unified {
-    gap: 12px;
+  .carousel-wrapper {
+    padding: 0 60px;
   }
 
   .carousel-btn {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
+  }
+
+  .carousel-btn-prev {
+    left: -50px;
+  }
+
+  .carousel-btn-next {
+    right: -50px;
   }
 
   .carousel-btn svg {
-    width: 20px;
-    height: 20px;
+    width: 24px !important;
+    height: 24px !important;
   }
 
   .hero-title {
@@ -815,7 +846,7 @@
     font-size: 16px;
   }
 
-  .product-image-carousel {
+  .product-image {
     height: 200px;
   }
 
@@ -828,9 +859,5 @@
     bottom: 16px;
     right: 16px;
     left: 16px;
-  }
-
-  .carousels-container {
-    gap: 24px;
   }
 }

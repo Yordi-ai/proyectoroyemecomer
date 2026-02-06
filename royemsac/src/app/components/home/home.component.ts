@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
@@ -17,8 +17,9 @@ interface ProductoProcesado extends Producto {
   styleUrl: './home.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   productosDestacados: ProductoProcesado[] = [];
+  productosVisibles: ProductoProcesado[] = [];
   terminoBusqueda: string = '';
   categoriaSeleccionada: string = '';
   categorias: string[] = [];
@@ -26,12 +27,12 @@ export class HomeComponent implements OnInit {
   mostrarToast: boolean = false;
   mensajeToast: string = '';
 
-  // Carrusel 1
-  carouselIndex1: number = 0;
-  itemsPerSlide: number = 4;
-
-  // Carrusel 2
-  carouselIndex2: number = 0;
+  // Carrusel infinito continuo
+  currentIndex: number = 0;
+  itemsPerView: number = 4;  // Mostrar 4 productos a la vez
+  autoPlayInterval: any;
+  isPaused: boolean = false;
+  productosOriginales: ProductoProcesado[] = [];
 
   constructor(
     private productoService: ProductoService,
@@ -45,11 +46,31 @@ export class HomeComponent implements OnInit {
     this.cargarCategorias();
   }
 
+  ngOnDestroy() {
+    this.detenerAutoPlay();
+  }
+
   cargarProductosDestacados() {
     this.productoService.obtenerDestacados().subscribe({
       next: (data) => {
-        this.productosDestacados = data.map(p => this.procesarProducto(p));
-        console.log('✅ Productos destacados cargados:', this.productosDestacados.length);
+        this.productosOriginales = data.map(p => this.procesarProducto(p));
+        
+        // Crear array circular infinito (duplicar 3 veces para efecto continuo)
+        this.productosDestacados = [
+          ...this.productosOriginales,
+          ...this.productosOriginales,
+          ...this.productosOriginales
+        ];
+        
+        this.actualizarProductosVisibles();
+        console.log('✅ Productos cargados:', this.productosOriginales.length);
+        console.log('🔄 Array circular total:', this.productosDestacados.length);
+        
+        // Iniciar auto-play
+        setTimeout(() => {
+          this.iniciarAutoPlay();
+        }, 100);
+        
         this.cdr.markForCheck();
       },
       error: (err) => {
@@ -68,78 +89,94 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // ✅ CARRUSEL 1 - PRIMERA MITAD DE PRODUCTOS
-get totalSlides1(): number {
-  const mitad = Math.ceil(this.productosDestacados.length / 2);
-  return Math.ceil(mitad / this.itemsPerSlide);
-}
-
-get productosCarrusel1(): ProductoProcesado[] {
-  const mitad = Math.ceil(this.productosDestacados.length / 2);
-  const primerasMitad = this.productosDestacados.slice(0, mitad);
-  const start = this.carouselIndex1 * this.itemsPerSlide;
-  return primerasMitad.slice(start, start + this.itemsPerSlide);
-}
-
-nextSlide1() {
-  if (this.carouselIndex1 < this.totalSlides1 - 1) {
-    this.carouselIndex1++;
-  } else {
-    this.carouselIndex1 = 0;
+  // ========================================
+  // CARRUSEL INFINITO CONTINUO
+  // ========================================
+  
+  actualizarProductosVisibles() {
+    // Mostrar 4 productos consecutivos desde currentIndex
+    this.productosVisibles = this.productosDestacados.slice(
+      this.currentIndex,
+      this.currentIndex + this.itemsPerView
+    );
   }
-  this.cdr.markForCheck();
-}
 
-prevSlide1() {
-  if (this.carouselIndex1 > 0) {
-    this.carouselIndex1--;
-  } else {
-    this.carouselIndex1 = this.totalSlides1 - 1;
+  nextSlide() {
+    // Avanzar 1 producto
+    this.currentIndex++;
+    
+    // Si llegamos al final del segundo grupo, volver al inicio del segundo grupo
+    // Esto crea el efecto de loop infinito sin que se note
+    const maxIndex = this.productosOriginales.length * 2;
+    if (this.currentIndex >= maxIndex) {
+      this.currentIndex = this.productosOriginales.length;
+    }
+    
+    this.actualizarProductosVisibles();
+    console.log('➡️ Index:', this.currentIndex, '| Mostrando productos:', 
+                this.currentIndex + 1, 'al', this.currentIndex + this.itemsPerView);
+    this.cdr.detectChanges();
   }
-  this.cdr.markForCheck();
-}
 
-goToSlide1(index: number) {
-  this.carouselIndex1 = index;
-  this.cdr.markForCheck();
-}
-
-// ✅ CARRUSEL 2 - SEGUNDA MITAD DE PRODUCTOS
-get totalSlides2(): number {
-  const mitad = Math.ceil(this.productosDestacados.length / 2);
-  const segundaMitad = this.productosDestacados.length - mitad;
-  return Math.ceil(segundaMitad / this.itemsPerSlide);
-}
-
-get productosCarrusel2(): ProductoProcesado[] {
-  const mitad = Math.ceil(this.productosDestacados.length / 2);
-  const segundasMitad = this.productosDestacados.slice(mitad);
-  const start = this.carouselIndex2 * this.itemsPerSlide;
-  return segundasMitad.slice(start, start + this.itemsPerSlide);
-}
-
-nextSlide2() {
-  if (this.carouselIndex2 < this.totalSlides2 - 1) {
-    this.carouselIndex2++;
-  } else {
-    this.carouselIndex2 = 0;
+  prevSlide() {
+    // Retroceder 1 producto
+    this.currentIndex--;
+    
+    // Si llegamos al inicio, saltar al final del segundo grupo
+    if (this.currentIndex < 0) {
+      this.currentIndex = this.productosOriginales.length - 1;
+    }
+    
+    this.actualizarProductosVisibles();
+    console.log('⬅️ Index:', this.currentIndex);
+    this.cdr.detectChanges();
   }
-  this.cdr.markForCheck();
-}
 
-prevSlide2() {
-  if (this.carouselIndex2 > 0) {
-    this.carouselIndex2--;
-  } else {
-    this.carouselIndex2 = this.totalSlides2 - 1;
+  // ========================================
+  // AUTO-PLAY CONTINUO
+  // ========================================
+  
+  iniciarAutoPlay() {
+    if (this.autoPlayInterval) {
+      clearInterval(this.autoPlayInterval);
+    }
+    
+    this.autoPlayInterval = setInterval(() => {
+      if (!this.isPaused && this.productosDestacados.length > 0) {
+        this.nextSlide();
+      }
+    }, 3000); // Cada 3 segundos avanza 1 producto
+    
+    console.log('🔄 Auto-play iniciado - avanza cada 3 segundos');
   }
-  this.cdr.markForCheck();
-}
 
-goToSlide2(index: number) {
-  this.carouselIndex2 = index;
-  this.cdr.markForCheck();
-}
+  detenerAutoPlay() {
+    if (this.autoPlayInterval) {
+      clearInterval(this.autoPlayInterval);
+      this.autoPlayInterval = null;
+      console.log('⏹️ Auto-play detenido');
+    }
+  }
+
+  pauseCarousel() {
+    this.isPaused = true;
+    console.log('⏸️ Carrusel pausado');
+  }
+
+  resumeCarousel() {
+    this.isPaused = false;
+    console.log('▶️ Carrusel reanudado');
+  }
+
+  reiniciarAutoPlay() {
+    this.detenerAutoPlay();
+    this.iniciarAutoPlay();
+  }
+
+  // ========================================
+  // MÉTODOS COMUNES
+  // ========================================
+
   navegarCategoria(categoria: string) {
     this.router.navigate(['/categoria', encodeURIComponent(categoria)]);
   }
