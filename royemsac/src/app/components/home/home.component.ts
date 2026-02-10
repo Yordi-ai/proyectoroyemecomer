@@ -27,12 +27,36 @@ export class HomeComponent implements OnInit, OnDestroy {
   mostrarToast: boolean = false;
   mensajeToast: string = '';
 
-  // Carrusel infinito continuo
+  // Carrusel de productos
   currentIndex: number = 0;
-  itemsPerView: number = 4;  // Mostrar 4 productos a la vez
+  itemsPerView: number = 4;
   autoPlayInterval: any;
   isPaused: boolean = false;
   productosOriginales: ProductoProcesado[] = [];
+
+  // CARRUSEL DE HERO
+  heroSlides = [
+   {
+    image: 'assets/images/hero/mineria1.jpg',
+    title: 'Equipos para Minería',
+    subtitle: 'Protección certificada para operaciones mineras',
+    badge: '🏔️ Minería'
+  },
+  {
+    image: 'assets/images/hero/mineria2.jpg',
+    title: 'Seguridad Industrial',
+    subtitle: 'EPP de alta resistencia para trabajos pesados',
+    badge: '⚙️ Industria Pesada'
+  },
+  {
+    image: 'assets/images/hero/refineria.jpg',
+    title: 'Refinerías y Petróleo',
+    subtitle: 'Equipos especializados para la industria petrolera',
+    badge: '🛢️ Refinería'
+  }
+  ];
+  currentSlideIndex: number = 0;
+  heroInterval: any;
 
   constructor(
     private productoService: ProductoService,
@@ -44,18 +68,56 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.cargarProductosDestacados();
     this.cargarCategorias();
+    this.iniciarCarruselHero();
   }
 
   ngOnDestroy() {
     this.detenerAutoPlay();
+    this.detenerCarruselHero();
   }
+
+  // ========================================
+  // CARRUSEL DE HERO
+  // ========================================
+
+  iniciarCarruselHero() {
+    this.heroInterval = setInterval(() => {
+      this.nextHeroSlide();
+    }, 6000);
+  }
+
+  detenerCarruselHero() {
+    if (this.heroInterval) {
+      clearInterval(this.heroInterval);
+    }
+  }
+
+  nextHeroSlide() {
+    this.currentSlideIndex = (this.currentSlideIndex + 1) % this.heroSlides.length;
+    this.cdr.markForCheck();
+  }
+
+  prevHeroSlide() {
+    this.currentSlideIndex = this.currentSlideIndex === 0 
+      ? this.heroSlides.length - 1 
+      : this.currentSlideIndex - 1;
+    this.cdr.markForCheck();
+  }
+
+  goToSlide(index: number) {
+    this.currentSlideIndex = index;
+    this.cdr.markForCheck();
+  }
+
+  // ========================================
+  // CARRUSEL DE PRODUCTOS
+  // ========================================
 
   cargarProductosDestacados() {
     this.productoService.obtenerDestacados().subscribe({
       next: (data) => {
         this.productosOriginales = data.map(p => this.procesarProducto(p));
         
-        // Crear array circular infinito (duplicar 3 veces para efecto continuo)
         this.productosDestacados = [
           ...this.productosOriginales,
           ...this.productosOriginales,
@@ -64,9 +126,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         
         this.actualizarProductosVisibles();
         console.log('✅ Productos cargados:', this.productosOriginales.length);
-        console.log('🔄 Array circular total:', this.productosDestacados.length);
         
-        // Iniciar auto-play
         setTimeout(() => {
           this.iniciarAutoPlay();
         }, 100);
@@ -89,12 +149,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ========================================
-  // CARRUSEL INFINITO CONTINUO
-  // ========================================
-  
   actualizarProductosVisibles() {
-    // Mostrar 4 productos consecutivos desde currentIndex
     this.productosVisibles = this.productosDestacados.slice(
       this.currentIndex,
       this.currentIndex + this.itemsPerView
@@ -102,40 +157,28 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   nextSlide() {
-    // Avanzar 1 producto
     this.currentIndex++;
     
-    // Si llegamos al final del segundo grupo, volver al inicio del segundo grupo
-    // Esto crea el efecto de loop infinito sin que se note
     const maxIndex = this.productosOriginales.length * 2;
     if (this.currentIndex >= maxIndex) {
       this.currentIndex = this.productosOriginales.length;
     }
     
     this.actualizarProductosVisibles();
-    console.log('➡️ Index:', this.currentIndex, '| Mostrando productos:', 
-                this.currentIndex + 1, 'al', this.currentIndex + this.itemsPerView);
     this.cdr.detectChanges();
   }
 
   prevSlide() {
-    // Retroceder 1 producto
     this.currentIndex--;
     
-    // Si llegamos al inicio, saltar al final del segundo grupo
     if (this.currentIndex < 0) {
       this.currentIndex = this.productosOriginales.length - 1;
     }
     
     this.actualizarProductosVisibles();
-    console.log('⬅️ Index:', this.currentIndex);
     this.cdr.detectChanges();
   }
 
-  // ========================================
-  // AUTO-PLAY CONTINUO
-  // ========================================
-  
   iniciarAutoPlay() {
     if (this.autoPlayInterval) {
       clearInterval(this.autoPlayInterval);
@@ -145,37 +188,28 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (!this.isPaused && this.productosDestacados.length > 0) {
         this.nextSlide();
       }
-    }, 3000); // Cada 3 segundos avanza 1 producto
-    
-    console.log('🔄 Auto-play iniciado - avanza cada 3 segundos');
+    }, 3000);
   }
 
   detenerAutoPlay() {
     if (this.autoPlayInterval) {
       clearInterval(this.autoPlayInterval);
       this.autoPlayInterval = null;
-      console.log('⏹️ Auto-play detenido');
     }
   }
 
   pauseCarousel() {
     this.isPaused = true;
-    console.log('⏸️ Carrusel pausado');
   }
 
   resumeCarousel() {
     this.isPaused = false;
-    console.log('▶️ Carrusel reanudado');
   }
 
   reiniciarAutoPlay() {
     this.detenerAutoPlay();
     this.iniciarAutoPlay();
   }
-
-  // ========================================
-  // MÉTODOS COMUNES
-  // ========================================
 
   navegarCategoria(categoria: string) {
     this.router.navigate(['/categoria', encodeURIComponent(categoria)]);

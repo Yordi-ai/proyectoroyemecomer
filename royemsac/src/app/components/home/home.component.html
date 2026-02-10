@@ -1,50 +1,100 @@
-<!-- HERO SECTION -->
-<section class="hero-modern">
-  <div class="hero-overlay"></div>
-  <div class="hero-content-wrapper">
-    <div class="hero-text">
-      <div class="hero-badge">
-        <span class="badge-icon">🛡️</span>
-        <span>Protección Certificada ANSI | OSHA</span>
-      </div>
-      <h1 class="hero-title">
-        Equipos de Protección Personal
-        <span class="highlight">para Minería e Industria</span>
-      </h1>
-      <p class="hero-description">
-        Protege a tu personal con productos certificados de la más alta calidad.
-        Contamos con más de 10 años de experiencia en el sector industrial.
-      </p>
-      <button class="btn-hero" (click)="scrollToProducts()">
-        <span class="btn-icon">📦</span>
-        Explorar Productos
-      </button>
-    </div>
-    
-    <div class="hero-stats-modern">
-      <div class="stat-modern">
-        <div class="stat-icon">📦</div>
-        <div class="stat-content">
-          <span class="stat-value">500+</span>
-          <span class="stat-text">Productos</span>
-        </div>
-      </div>
-      <div class="stat-modern">
-        <div class="stat-icon">⭐</div>
-        <div class="stat-content">
-          <span class="stat-value">10+</span>
-          <span class="stat-text">Años</span>
-        </div>
-      </div>
-      <div class="stat-modern">
-        <div class="stat-icon">👥</div>
-        <div class="stat-content">
-          <span class="stat-value">1000+</span>
-          <span class="stat-text">Clientes</span>
+<!-- HERO SECTION PROFESIONAL CON CARRUSEL -->
+<section class="hero-professional">
+  
+  <!-- Slides del carrusel -->
+  <div class="hero-slides">
+    <div 
+      *ngFor="let slide of heroSlides; let i = index" 
+      class="hero-slide"
+      [class.active]="i === currentSlideIndex">
+      
+      <!-- Imagen de fondo con efecto Ken Burns -->
+      <div class="hero-slide-bg" [style.background-image]="'url(' + slide.image + ')'"></div>
+      
+      <!-- Overlay gradiente -->
+      <div class="hero-slide-overlay"></div>
+      
+      <!-- Contenido del slide -->
+      <div class="hero-slide-content">
+        <div class="container-hero">
+          
+          <!-- Badge animado -->
+          <div class="hero-badge-animated">
+            <span class="badge-icon-animated">{{ slide.badge }}</span>
+          </div>
+          
+          <!-- Título principal -->
+          <h1 class="hero-title-animated">
+            {{ slide.title }}
+          </h1>
+          
+          <!-- Subtítulo -->
+          <p class="hero-subtitle-animated">
+            {{ slide.subtitle }}
+          </p>
+          
+          <!-- Botón CTA -->
+          <button class="btn-hero-animated" (click)="scrollToProducts()">
+            <span class="btn-text">Explorar Productos</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+          
+          <!-- Estadísticas flotantes -->
+          <div class="hero-stats-floating">
+            <div class="stat-box">
+              <div class="stat-icon-box">📦</div>
+              <div class="stat-info">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Productos</div>
+              </div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-icon-box">⭐</div>
+              <div class="stat-info">
+                <div class="stat-number">10+</div>
+                <div class="stat-label">Años</div>
+              </div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-icon-box">👥</div>
+              <div class="stat-info">
+                <div class="stat-number">1000+</div>
+                <div class="stat-label">Clientes</div>
+              </div>
+            </div>
+          </div>
+          
         </div>
       </div>
     </div>
   </div>
+  
+  <!-- Controles de navegación -->
+  <button class="hero-nav-btn hero-nav-prev" (click)="prevHeroSlide()">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+  </button>
+  
+  <button class="hero-nav-btn hero-nav-next" (click)="nextHeroSlide()">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <polyline points="9 18 15 12 9 6"/>
+    </svg>
+  </button>
+  
+  <!-- Indicadores de posición -->
+  <div class="hero-indicators">
+    <button 
+      *ngFor="let slide of heroSlides; let i = index"
+      class="hero-indicator"
+      [class.active]="i === currentSlideIndex"
+      (click)="goToSlide(i)">
+    </button>
+  </div>
+  
 </section>
 
 <!-- BARRA DE BÚSQUEDA -->
