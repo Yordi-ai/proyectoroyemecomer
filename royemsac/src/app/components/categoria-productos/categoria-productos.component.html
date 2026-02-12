@@ -46,12 +46,11 @@
         <!-- Parte clickeable -->
         <div class="product-clickable" [routerLink]="['/producto', producto.id]">
           <div class="product-image">
-            <!-- ✅ SIN onerror para evitar loops -->
             <img 
               [src]="producto.imagenUrl" 
               [alt]="producto.nombre"
               loading="lazy">
-            <span class="product-badge">{{ producto.categoria }}</span>
+            <!-- ❌ ETIQUETA REMOVIDA - Ya no tapa la imagen -->
           </div>
           
           <div class="product-info">
