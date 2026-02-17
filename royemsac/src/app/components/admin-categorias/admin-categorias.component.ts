@@ -146,6 +146,19 @@ export class AdminCategoriasComponent implements OnInit {
     };
   }
 
+  // ===== RESTAURAR =====
+
+  confirmarRestaurar() {
+    this.confirmacion = {
+      titulo: '¿Restaurar Categorías Predeterminadas?',
+      mensaje: 'Esto eliminará todas las categorías personalizadas y restaurará las categorías originales del sistema.',
+      botonTexto: 'Restaurar',
+      accion: () => {
+        this.categoriaService.restaurarDefecto();
+        this.cancelarConfirmacion();
+      }
+    };
+  }
 
   // ===== CONFIRMACIÓN =====
 

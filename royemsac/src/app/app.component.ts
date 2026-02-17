@@ -4,7 +4,11 @@ import { CommonModule } from '@angular/common';
 import { CarritoService } from './services/carrito.service';
 import { AuthService } from './services/auth.service';
 import { UserModel } from './models/user.model';
-import { CategoriaService, CategoriaPrincipal } from './services/categoria.service';
+
+interface CategoriaMenu {
+  nombre: string;
+  subcategorias: string[];
+}
 
 @Component({
   selector: 'app-root',
@@ -19,30 +23,73 @@ export class AppComponent implements OnInit {
   mostrarMenuProductos = false;
   categoriaActivaIndex: number | null = null;
 
-  // ✅ AHORA USA EL TIPO DEL SERVICIO
-  categoriasMenu: CategoriaPrincipal[] = [];
+  categoriasMenu: CategoriaMenu[] = [
+    {
+      nombre: 'SEGURIDAD INDUSTRIAL',
+      subcategorias: [
+        'Protección de pies',
+        'Protección de manos',
+        'Protección corporal',
+        'Protección anticaída',
+        'Protección auditiva',
+        'Protección respiratoria',
+        'Protección de cabeza, visual y facial',
+        'Ropa de trabajo',
+        'Bloqueo y etiquetado',
+        'Paños de seguridad industrial',
+        'Señalización',
+        'Emergencia y primeros auxilios',
+        'Protección solar'
+      ]
+    },
+    {
+      nombre: 'ELÉCTRICOS E INSTRUMENTACIÓN',
+      subcategorias: [
+        'Materiales eléctricos',
+        'Iluminación',
+        'Conductores',
+        'Cintas aislantes',
+        'Elementos de protección eléctrica',
+        'Amarracables'
+      ]
+    },
+    {
+      nombre: 'HERRAMIENTAS INDUSTRIALES',
+      subcategorias: [
+        'Herramientas manuales',
+        'Herramientas eléctricas',
+        'Herramientas inalámbricas',
+        'Instrumentos de medición',
+        'Almacenamiento de herramientas',
+        'Herramientas neumáticas',
+        'Otras herramientas manuales y accesorios'
+      ]
+    },
+    {
+      nombre: 'MRO & MISCELÁNEOS',
+      subcategorias: [
+        'Mantenimiento y limpieza',
+        'Ferretería industrial',
+        'Materiales de construcción',
+        'Abastecimiento integral',
+        'Equipamiento de campamentos'
+      ]
+    }
+  ];
 
   constructor(
     private carritoService: CarritoService,
     private authService: AuthService,
-    private router: Router,
-    private categoriaService: CategoriaService
+    private router: Router
   ) {}
 
   ngOnInit() {
-    // Carrito
     this.carritoService.carrito$.subscribe(() => {
       this.cartCount = this.carritoService.obtenerCantidadTotal();
     });
 
-    // Usuario
     this.authService.currentUser$.subscribe(usuario =>  {
       this.usuarioActual = usuario;
-    });
-
-    // ✅ CARGAR CATEGORÍAS Y ESCUCHAR CAMBIOS EN TIEMPO REAL
-    this.categoriaService.obtenerCategorias().subscribe(categorias => {
-      this.categoriasMenu = this.categoriaService.obtenerCategoriasVisibles();
     });
   }
 

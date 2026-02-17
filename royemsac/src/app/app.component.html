@@ -62,8 +62,9 @@
                 </h3>
                 <ul class="subcategorias-list">
                   <li *ngFor="let sub of categoriasMenu[categoriaActivaIndex].subcategorias">
-                    <a (click)="navegarACategoria(sub.nombre)">{{ sub.nombre }}</a>
+                    <a (click)="navegarACategoria(sub)">{{ sub }}</a>
                   </li>
+
                 </ul>
               </div>
               
