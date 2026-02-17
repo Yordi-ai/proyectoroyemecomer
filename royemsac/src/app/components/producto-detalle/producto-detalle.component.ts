@@ -23,6 +23,9 @@ export class ProductoDetalleComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // ✅ SCROLL INMEDIATO AL INICIO
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.cargarProducto(Number(id));

@@ -12,7 +12,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* ✅ Previene cualquier cambio de tamaño */
   flex-shrink: 0;
 }
 
@@ -22,7 +21,6 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  /* ✅ Fade in suave en lugar de aparecer bruscamente */
   opacity: 0;
   animation: fadeInImg 0.3s ease-in 0.1s forwards;
 }
@@ -36,7 +34,6 @@
 /* ✅ CRÍTICO: Fila de tabla con altura mínima fija */
 .productos-table tbody tr {
   min-height: 80px;
-  /* ✅ Sin transiciones que causen parpadeo */
   transition: none !important;
 }
 
@@ -88,12 +85,12 @@
 }
 
 /* ============================================
-   SIDEBAR
+   SIDEBAR - PROFESIONAL Y CENTRADO
    ============================================ */
 
 .admin-sidebar {
-  width: 260px;
-  background: var(--secondary-color);
+  width: 280px;
+  background: linear-gradient(180deg, #2c3e50 0%, #1f2937 100%);
   color: white;
   display: flex;
   flex-direction: column;
@@ -102,79 +99,108 @@
   left: 0;
   top: 0;
   z-index: 100;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
 }
 
 .sidebar-header {
-  padding: 24px;
+  padding: 32px 24px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-header h2 {
-  font-size: 20px;
+  font-size: 22px;
   margin-bottom: 8px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: white;
+  text-align: center;
 }
 
 .admin-name {
   font-size: 14px;
-  opacity: 0.7;
+  opacity: 0.8;
+  text-align: center;
+  color: #a7f3d0;
+  font-weight: 600;
 }
 
 .sidebar-nav {
   flex: 1;
-  padding: 20px 0;
+  padding: 24px 0;
+  overflow-y: auto;
 }
 
 .nav-item {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 24px;
+  gap: 16px;
+  padding: 16px 24px;
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
   text-align: left;
-  border-left: 3px solid transparent;
-  transition: all 0.2s;
+  border-left: 4px solid transparent;
+  transition: all 0.3s ease;
   text-decoration: none;
+  margin: 4px 0;
 }
 
 .nav-item:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
   color: white;
+  padding-left: 28px;
 }
 
 .nav-item.active {
-  background: rgba(74, 124, 89, 0.1);
-  color: #4a7c59;
+  background: linear-gradient(90deg, rgba(74, 124, 89, 0.2) 0%, rgba(74, 124, 89, 0.05) 100%);
+  color: #a7f3d0;
   border-left-color: #4a7c59;
+  font-weight: 700;
 }
 
 .nav-icon {
-  font-size: 20px;
+  font-size: 22px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .sidebar-footer {
-  padding: 20px 24px;
+  padding: 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.15);
 }
 
 .btn-logout {
   width: 100%;
-  padding: 12px;
-  background: rgba(239, 68, 68, 0.2);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 14px 20px;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%);
+  border: 2px solid rgba(239, 68, 68, 0.4);
   color: #fca5a5;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
   cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .btn-logout:hover {
-  background: rgba(239, 68, 68, 0.3);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(220, 38, 38, 0.3) 100%);
+  border-color: rgba(239, 68, 68, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 /* ============================================
@@ -183,12 +209,14 @@
 
 .admin-content {
   flex: 1;
-  margin-left: 260px;
-  padding: 32px;
+  margin-left: 280px;
+  padding: 40px;
+  background: #f8f9fa;
+  min-height: 100vh;
 }
 
 .vista-productos {
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
@@ -228,10 +256,13 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
   background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 124, 89, 0.3);
 }
 
 /* ============================================
@@ -253,6 +284,12 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
 }
 
 .stat-icon {
@@ -310,6 +347,7 @@
   border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 14px;
+  transition: border-color 0.3s ease;
 }
 
 .search-input:focus {
@@ -324,6 +362,7 @@
   font-size: 14px;
   cursor: pointer;
   min-width: 200px;
+  transition: border-color 0.3s ease;
 }
 
 .filter-select:focus {
@@ -362,7 +401,7 @@
 }
 
 /* ============================================
-   TABLA DE PRODUCTOS - ✅ OPTIMIZADA
+   TABLA DE PRODUCTOS
    ============================================ */
 
 .table-container {
@@ -375,7 +414,6 @@
 .productos-table {
   width: 100%;
   border-collapse: collapse;
-  /* ✅ Layout fijo para mejor performance */
   table-layout: fixed;
 }
 
@@ -397,17 +435,15 @@
   letter-spacing: 0.5px;
 }
 
-/* ✅ Ancho de columnas fijo */
-.productos-table th:nth-child(1) { width: 80px; }  /* Imagen */
-.productos-table th:nth-child(2) { width: auto; }  /* Producto */
-.productos-table th:nth-child(3) { width: 150px; } /* Categoría */
-.productos-table th:nth-child(4) { width: 120px; } /* Precio */
-.productos-table th:nth-child(5) { width: 140px; } /* Stock */
-.productos-table th:nth-child(6) { width: 120px; } /* Acciones */
+.productos-table th:nth-child(1) { width: 80px; }
+.productos-table th:nth-child(2) { width: auto; }
+.productos-table th:nth-child(3) { width: 150px; }
+.productos-table th:nth-child(4) { width: 120px; }
+.productos-table th:nth-child(5) { width: 140px; }
+.productos-table th:nth-child(6) { width: 120px; }
 
 .productos-table tbody tr {
   border-bottom: 1px solid var(--border-color);
-  /* ✅ CRÍTICO: Sin hover que cause reflows */
   background: white;
 }
 
@@ -422,7 +458,6 @@
   vertical-align: middle;
 }
 
-/* Info del producto */
 .producto-info {
   display: flex;
   flex-direction: column;
@@ -444,14 +479,12 @@
   overflow: hidden;
 }
 
-/* Precio */
 .precio {
   font-size: 18px;
   font-weight: 700;
   color: var(--primary-color);
 }
 
-/* Badges */
 .badge {
   display: inline-block;
   padding: 6px 12px;
@@ -481,7 +514,6 @@
   color: #991b1b;
 }
 
-/* Acciones */
 .action-buttons {
   display: flex;
   gap: 8px;
@@ -508,6 +540,7 @@
 
 .btn-edit:hover {
   background: #bfdbfe;
+  transform: scale(1.1);
 }
 
 .btn-delete {
@@ -517,9 +550,9 @@
 
 .btn-delete:hover {
   background: #fecaca;
+  transform: scale(1.1);
 }
 
-/* Sin datos */
 .no-data {
   text-align: center;
   padding: 60px 20px;
@@ -582,6 +615,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.3s ease;
 }
 
 .btn-close:hover {
@@ -620,6 +654,7 @@
   border-radius: 8px;
   font-size: 14px;
   font-family: inherit;
+  transition: border-color 0.3s ease;
 }
 
 .form-input:focus, .form-textarea:focus {
@@ -632,7 +667,6 @@
   min-height: 100px;
 }
 
-/* SELECT DE CATEGORÍAS */
 .form-select {
   cursor: pointer;
   background-color: white;
@@ -674,7 +708,6 @@
   font-style: italic;
 }
 
-/* Upload de imagen */
 .image-upload-area {
   border: 2px dashed var(--border-color);
   border-radius: 12px;
@@ -726,6 +759,7 @@
   cursor: pointer;
   font-size: 14px;
   color: var(--text-color);
+  transition: all 0.3s ease;
 }
 
 .btn-upload:hover {
@@ -749,6 +783,7 @@
   cursor: pointer;
   font-size: 14px;
   color: var(--text-color);
+  transition: all 0.3s ease;
 }
 
 .btn-secondary:hover {
@@ -785,34 +820,46 @@
 
 @media (max-width: 1024px) {
   .admin-sidebar {
-    width: 220px;
+    width: 240px;
   }
   
   .admin-content {
-    margin-left: 220px;
+    margin-left: 240px;
+    padding: 30px;
   }
 }
 
 @media (max-width: 768px) {
   .admin-sidebar {
-    width: 70px;
+    width: 80px;
   }
   
   .admin-content {
-    margin-left: 70px;
+    margin-left: 80px;
     padding: 20px;
   }
   
   .sidebar-header h2,
-  .admin-name,
-  .nav-item span:not(.nav-icon),
-  .sidebar-footer {
+  .admin-name {
+    display: none;
+  }
+  
+  .nav-item span:not(.nav-icon) {
     display: none;
   }
   
   .nav-item {
     justify-content: center;
-    padding: 14px;
+    padding: 16px;
+  }
+  
+  .sidebar-footer {
+    padding: 16px;
+  }
+  
+  .btn-logout {
+    padding: 12px;
+    font-size: 20px;
   }
   
   .stats-grid {

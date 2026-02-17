@@ -10,6 +10,8 @@ import { AdminComponent } from './components/admin/admin.component';
 import { AdminUsuariosComponent } from './components/admin-usuarios/admin-usuarios.component';
 import { AdminPedidosComponent } from './components/admin-pedidos/admin-pedidos.component';
 import { CategoriaProductosComponent } from './components/categoria-productos/categoria-productos.component';
+import { AdminCategoriasComponent } from './components/admin-categorias/admin-categorias.component';
+import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
   // ✅ PÁGINA PRINCIPAL
@@ -30,10 +32,11 @@ export const routes: Routes = [
   // ✅ USUARIO
   { path: 'mis-pedidos', component: MisPedidosComponent },
   
-  // ✅ ADMIN
-  { path: 'admin', component: AdminComponent },
-  { path: 'admin/usuarios', component: AdminUsuariosComponent },
-  { path: 'admin/pedidos', component: AdminPedidosComponent },
+  // ✅ ADMIN - PANEL PRINCIPAL
+  { path: 'admin', component: AdminComponent, canActivate: [adminGuard] },
+  { path: 'admin/usuarios', component: AdminUsuariosComponent, canActivate: [adminGuard] },
+  { path: 'admin/pedidos', component: AdminPedidosComponent, canActivate: [adminGuard] },
+  { path: 'admin/categorias', component: AdminCategoriasComponent, canActivate: [adminGuard] },
   
   // ✅ REDIRECT PARA RUTAS NO ENCONTRADAS
   { path: '**', redirectTo: '' }

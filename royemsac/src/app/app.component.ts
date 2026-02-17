@@ -4,11 +4,7 @@ import { CommonModule } from '@angular/common';
 import { CarritoService } from './services/carrito.service';
 import { AuthService } from './services/auth.service';
 import { UserModel } from './models/user.model';
-
-interface CategoriaMenu {
-  nombre: string;
-  subcategorias: string[];
-}
+import { CategoriaService, CategoriaPrincipal } from './services/categoria.service';
 
 @Component({
   selector: 'app-root',
@@ -21,75 +17,32 @@ export class AppComponent implements OnInit {
   cartCount = 0;
   usuarioActual: UserModel | null = null;
   mostrarMenuProductos = false;
-  categoriaActivaIndex: number | null = null; // ✅ NUEVA PROPIEDAD
+  categoriaActivaIndex: number | null = null;
 
-  categoriasMenu: CategoriaMenu[] = [
-    {
-      nombre: 'SEGURIDAD INDUSTRIAL',
-      subcategorias: [
-        'Protección de pies',
-        'Protección de manos',
-        'Protección corporal',
-        'Protección anticaída',
-        'Protección auditiva',
-        'Protección respiratoria',
-        'Protección de cabeza, visual y facial',
-        'Ropa de trabajo',
-        'Bloqueo y etiquetado',
-        'Paños de seguridad industrial',
-        'Señalización',
-        'Emergencia y primeros auxilios',
-        'Protección solar'
-      ]
-    },
-    {
-      nombre: 'ELÉCTRICOS E INSTRUMENTACIÓN',
-      subcategorias: [
-        'Materiales eléctricos',
-        'Iluminación',
-        'Conductores',
-        'Cintas aislantes',
-        'Elementos de protección eléctrica',
-        'Amarracables'
-      ]
-    },
-    {
-      nombre: 'HERRAMIENTAS INDUSTRIALES',
-      subcategorias: [
-        'Herramientas manuales',
-        'Herramientas eléctricas',
-        'Herramientas inalámbricas',
-        'Instrumentos de medición',
-        'Almacenamiento de herramientas',
-        'Herramientas neumáticas',
-        'Otras herramientas manuales y accesorios'
-      ]
-    },
-    {
-      nombre: 'MRO & MISCELÁNEOS',
-      subcategorias: [
-        'Mantenimiento y limpieza',
-        'Ferretería industrial',
-        'Materiales de construcción',
-        'Abastecimiento integral',
-        'Equipamiento de campamentos'
-      ]
-    }
-  ];
+  // ✅ AHORA USA EL TIPO DEL SERVICIO
+  categoriasMenu: CategoriaPrincipal[] = [];
 
   constructor(
     private carritoService: CarritoService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private categoriaService: CategoriaService
   ) {}
 
   ngOnInit() {
+    // Carrito
     this.carritoService.carrito$.subscribe(() => {
       this.cartCount = this.carritoService.obtenerCantidadTotal();
     });
 
+    // Usuario
     this.authService.currentUser$.subscribe(usuario =>  {
       this.usuarioActual = usuario;
+    });
+
+    // ✅ CARGAR CATEGORÍAS Y ESCUCHAR CAMBIOS EN TIEMPO REAL
+    this.categoriaService.obtenerCategorias().subscribe(categorias => {
+      this.categoriasMenu = this.categoriaService.obtenerCategoriasVisibles();
     });
   }
 
@@ -97,22 +50,19 @@ export class AppComponent implements OnInit {
     return this.authService.isAdmin();
   }
 
-  // ✅ NUEVO: Activar categoría específica
   activarCategoria(index: number) {
     this.categoriaActivaIndex = index;
   }
 
-  // ✅ NUEVO: Desactivar categoría
   desactivarCategoria() {
     this.categoriaActivaIndex = null;
   }
 
-  // ✅ ACTUALIZADO: Navegar a página dedicada de categoría
   navegarACategoria(categoria: string) {
     const categoriaEncoded = encodeURIComponent(categoria);
     this.router.navigate(['/categoria', categoriaEncoded]);
     this.mostrarMenuProductos = false;
-    this.categoriaActivaIndex = null; // ✅ RESETEAR
+    this.categoriaActivaIndex = null;
   }
 
   logout() {

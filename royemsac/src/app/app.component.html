@@ -55,16 +55,21 @@
           </div>
 
           <!-- ✅ COLUMNA DERECHA: SUBCATEGORÍAS -->
-          <div class="subcategorias-panel">
-            <div *ngIf="categoriaActivaIndex !== null" class="subcategorias-contenido">
-              <h3 class="subcategorias-titulo">
-                {{ categoriasMenu[categoriaActivaIndex].nombre }}
-              </h3>
-              <ul class="subcategorias-list">
-                <li *ngFor="let sub of categoriasMenu[categoriaActivaIndex].subcategorias">
-                  <a (click)="navegarACategoria(sub)">{{ sub }}</a>
-                </li>
-              </ul>
+                    <div class="subcategorias-panel">
+              <div *ngIf="categoriaActivaIndex !== null" class="subcategorias-contenido">
+                <h3 class="subcategorias-titulo">
+                  {{ categoriasMenu[categoriaActivaIndex].nombre }}
+                </h3>
+                <ul class="subcategorias-list">
+                  <li *ngFor="let sub of categoriasMenu[categoriaActivaIndex].subcategorias">
+                    <a (click)="navegarACategoria(sub.nombre)">{{ sub.nombre }}</a>
+                  </li>
+                </ul>
+              </div>
+              
+              <div *ngIf="categoriaActivaIndex === null" class="mensaje-inicial">
+                <span>Selecciona una categoría</span>
+              </div>
             </div>
             
             <!-- ✅ MENSAJE INICIAL -->
@@ -75,7 +80,7 @@
 
         </div>
       </div>
-    </div>
+    
     
     <a href="#">Nosotros</a>
     <a href="#">Contáctanos</a>

@@ -24,7 +24,6 @@ export class CategoriaProductosComponent implements OnInit {
   mensajeToast: string = '';
   cargando: boolean = true;
 
-  // ✅ MAPEO DE CATEGORÍAS PRINCIPALES A SUBCATEGORÍAS
   private mapaCategoriasSubcategorias: { [key: string]: string[] } = {
     'Seguridad Industrial': [
       'Protección de pies',
@@ -75,6 +74,9 @@ export class CategoriaProductosComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // ✅ SCROLL AL INICIO
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    
     this.route.params.subscribe(params => {
       const categoria = params['categoria'];
       if (categoria) {
@@ -88,17 +90,17 @@ export class CategoriaProductosComponent implements OnInit {
     this.cargando = true;
     this.cdr.markForCheck();
 
-    // Verificar si es categoría principal o subcategoría
+    // Verificar si es categoría principal
     if (this.mapaCategoriasSubcategorias[categoria]) {
       this.esCategoriaPrincipal = true;
       this.cargarCategoriaPrincipal(categoria);
     } else {
       this.esCategoriaPrincipal = false;
-      this.cargarSubcategoria(categoria);
+      // ✅ BUSCAR POR NOMBRE Y CATEGORÍA
+      this.buscarPorNombreYCategoria(categoria);
     }
   }
 
-  // ✅ CARGAR CATEGORÍA PRINCIPAL (todos sus productos)
   private cargarCategoriaPrincipal(categoriaPrincipal: string) {
     const subcategorias = this.mapaCategoriasSubcategorias[categoriaPrincipal];
     
@@ -106,7 +108,7 @@ export class CategoriaProductosComponent implements OnInit {
       next: (data) => {
         const productosFiltrados = data.filter(p => 
           subcategorias.some(sub => 
-            this.categoriasCoinciden(p.categoria, sub)
+            this.coincide(p.categoria, sub)
           )
         );
         
@@ -123,36 +125,25 @@ export class CategoriaProductosComponent implements OnInit {
     });
   }
 
-  // ✅ CARGAR SUBCATEGORÍA (productos específicos)
-  private cargarSubcategoria(subcategoria: string) {
-    this.productoService.obtenerPorCategoria(subcategoria).subscribe({
-      next: (data) => {
-        this.productos = data.map(p => this.procesarProducto(p));
-        this.cargando = false;
-        this.cdr.markForCheck();
-      },
-      error: (err) => {
-        console.error('Error al cargar subcategoría:', err);
-        // Intentar búsqueda flexible
-        this.buscarPorCategoriaFlexible(subcategoria);
-      }
-    });
-  }
-
-  // ✅ BÚSQUEDA FLEXIBLE
-  private buscarPorCategoriaFlexible(categoria: string) {
+  // ✅ NUEVA FUNCIÓN - Busca por NOMBRE y CATEGORÍA
+  private buscarPorNombreYCategoria(termino: string) {
     this.productoService.obtenerTodos().subscribe({
       next: (data) => {
-        const productosFiltrados = data.filter(p => 
-          this.categoriasCoinciden(p.categoria, categoria)
-        );
+        const t = termino.toLowerCase().trim();
+        
+        // Filtrar por nombre O categoría
+        const productosFiltrados = data.filter(p => {
+          const nombreMatch = p.nombre.toLowerCase().includes(t);
+          const categoriaMatch = p.categoria.toLowerCase().includes(t);
+          return nombreMatch || categoriaMatch;
+        });
         
         this.productos = productosFiltrados.map(p => this.procesarProducto(p));
         this.cargando = false;
         this.cdr.markForCheck();
       },
       error: (err) => {
-        console.error('Error en búsqueda flexible:', err);
+        console.error('Error en búsqueda:', err);
         this.productos = [];
         this.cargando = false;
         this.cdr.markForCheck();
@@ -160,8 +151,8 @@ export class CategoriaProductosComponent implements OnInit {
     });
   }
 
-  // ✅ COMPARACIÓN FLEXIBLE DE CATEGORÍAS
-  private categoriasCoinciden(cat1: string, cat2: string): boolean {
+  // ✅ COINCIDENCIA FLEXIBLE
+  private coincide(cat1: string, cat2: string): boolean {
     const c1 = cat1.toLowerCase().trim();
     const c2 = cat2.toLowerCase().trim();
     return c1.includes(c2) || c2.includes(c1) || c1 === c2;
@@ -214,6 +205,6 @@ export class CategoriaProductosComponent implements OnInit {
       'Herramientas eléctricas': 'Equipos eléctricos industriales de última generación'
     };
     
-    return descripciones[this.nombreCategoria] || `Productos de ${this.nombreCategoria.toLowerCase()}`;
+    return descripciones[this.nombreCategoria] || `Resultados para: "${this.nombreCategoria}"`;
   }
 }

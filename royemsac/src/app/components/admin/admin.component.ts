@@ -9,6 +9,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { RouterLink } from '@angular/router';
 
 // ✅ NUEVA INTERFAZ
 interface ProductoConUrl extends Producto {
@@ -24,7 +25,7 @@ interface EstadisticasAdmin {
 
 @Component({
   selector: 'app-admin',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule , RouterLink],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush // ✅ OPTIMIZACIÓN CRÍTICA

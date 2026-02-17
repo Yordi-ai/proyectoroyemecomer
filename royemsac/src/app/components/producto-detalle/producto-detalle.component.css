@@ -1,13 +1,26 @@
+/* ============================================
+   WRAPPER - FOOTER SIEMPRE ABAJO
+   ============================================ */
+
+.page-wrapper {
+  flex: 1;
+  min-height: 600px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
 .detalle-container {
   max-width: 1200px;
   margin: 30px auto;
   padding: 20px;
+  flex: 1;
 }
 
 .btn-volver {
   background-color: #fff;
-  border: 2px solid #003366;
-  color: #003366;
+  border: 2px solid #4a7c59;
+  color: #4a7c59;
   padding: 10px 20px;
   border-radius: 6px;
   cursor: pointer;
@@ -17,7 +30,7 @@
 }
 
 .btn-volver:hover {
-  background-color: #003366;
+  background-color: #4a7c59;
   color: #fff;
 }
 
@@ -35,16 +48,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f5f5f5;
+  background-color: #FFFFFF; /* ← BLANCO PURO */
   border-radius: 8px;
-  padding: 20px;
-  min-height: 400px;
+  padding: 40px; /* ← Más padding */
+  min-height: 500px; /* ← Más alto */
+  border: 1px solid #f0f0f0;
 }
 
 .detalle-imagen img {
   max-width: 100%;
-  max-height: 500px;
+  max-height: 600px; /* ← Más grande */
+  width: auto;
+  height: auto;
   object-fit: contain;
+  object-position: center;
+  filter: brightness(1.02) contrast(1.05);
+  mix-blend-mode: multiply; /* ← Elimina fondos grises de la imagen */
 }
 
 .placeholder-imagen {
@@ -70,7 +89,7 @@
 }
 
 .badge-categoria {
-  background-color: #003366;
+  background-color: #4a7c59;
   color: #fff;
   padding: 6px 12px;
   border-radius: 20px;
@@ -90,11 +109,11 @@
 .precio {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #00b894;
+  color: #4a7c59;
 }
 
 .stock {
-  background-color: #00b894;
+  background-color: #4a7c59;
   color: #fff;
   padding: 6px 12px;
   border-radius: 6px;
@@ -112,7 +131,7 @@
 
 .descripcion h3 {
   font-size: 1.3rem;
-  color: #003366;
+  color: #4a7c59;
   margin-bottom: 10px;
 }
 
@@ -130,7 +149,7 @@
 
 .cantidad-selector label {
   font-weight: bold;
-  color: #003366;
+  color: #4a7c59;
 }
 
 .controles-cantidad {
@@ -142,9 +161,9 @@
 .controles-cantidad button {
   width: 40px;
   height: 40px;
-  border: 2px solid #003366;
+  border: 2px solid #4a7c59;
   background-color: #fff;
-  color: #003366;
+  color: #4a7c59;
   font-size: 1.5rem;
   border-radius: 6px;
   cursor: pointer;
@@ -152,6 +171,123 @@
 }
 
 .controles-cantidad button:hover:not(:disabled) {
-  background-color: #003366;
+  background-color: #4a7c59;
   color: #fff;
+}
+
+.controles-cantidad button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cantidad-display {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #222;
+  min-width: 40px;
+  text-align: center;
+}
+
+.acciones {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.btn-agregar-carrito,
+.btn-seguir-comprando {
+  flex: 1;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 200px;
+}
+
+.btn-agregar-carrito {
+  background-color: #4a7c59;
+  color: #fff;
+}
+
+.btn-agregar-carrito:hover:not(:disabled) {
+  background-color: #3d6f46;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 124, 89, 0.3);
+}
+
+.btn-agregar-carrito:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.btn-seguir-comprando {
+  background-color: #fff;
+  color: #4a7c59;
+  border: 2px solid #4a7c59;
+}
+
+.btn-seguir-comprando:hover {
+  background-color: #4a7c59;
+  color: #fff;
+}
+
+/* ============================================
+   LOADING MEJORADO
+   ============================================ */
+
+.cargando {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 500px;
+  font-size: 1.2rem;
+  color: #666;
+  flex: 1;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #4a7c59;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .detalle-contenido {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+  
+  .detalle-info h1 {
+    font-size: 1.5rem;
+  }
+  
+  .precio {
+    font-size: 2rem;
+  }
+  
+  .acciones {
+    flex-direction: column;
+  }
+  
+  .btn-agregar-carrito,
+  .btn-seguir-comprando {
+    width: 100%;
+  }
 }
